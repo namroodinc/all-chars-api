@@ -8,7 +8,7 @@ The following data is collected:
 
 ### The 'Metric' Object
 A metric can be a:
-⋅⋅* News Article
-⋅⋅* Alexa Ranking
-⋅⋅* Circulation (by year)
-⋅⋅* Press Complaint
+* News Article
+* Alexa Ranking
+* Circulation (by year)
+* Press Complaint
