@@ -1,7 +1,7 @@
-# pt-newsrater
+# "PT" Newsrater
 
 ## What is this?
-`pt-newsrater` is the API for Press Torch.
+`pt-newsrater` is the API for "PT".
 
 ## Data collected
 The following data is collected:
@@ -14,6 +14,19 @@ Firstly, I should add that a `metric` can be a:
 * Press Complaint, `type: 'complaint'`
 
 `metric` entries share the following object values:
-* `publicationId` - The ID of the Publication
-* `dateCreated` - The Date/Time the entry was created
-* `dateModified` - The Date/Time the entry was modified
+* `publicationId` - The ID of the Publication. (`string`)
+* `dateCreated` - The Date/Time the entry was created. (`timestamp`)
+* `dateModified` - The Date/Time the entry was modified. (`timestamp`)
+* `body` - Contains specific values related to the type of `metric`. (`object`)
+
+#### News Article
+blurb
+
+#### Alexa Ranking
+blurb
+
+#### Circulation (by year)
+blurb
+
+#### Press Complaint
+blurb
