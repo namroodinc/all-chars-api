@@ -6,9 +6,14 @@
 ## Data collected
 The following data is collected:
 
-### The 'Metric' Object
-A metric can be a:
-* News Article
-* Alexa Ranking
-* Circulation (by year)
-* Press Complaint
+### A typical `metric` object
+Firstly, I should add that a `metric` can be a:
+* News Article, `type: 'article'`
+* Alexa Ranking, `type: 'ranking'`
+* Circulation (by year), `type: 'circulation'`
+* Press Complaint, `type: 'complaint'`
+
+`metric` entries share the following object values:
+* `publicationId` - The ID of the Publication
+* `dateCreated` - The Date/Time the entry was created
+* `dateModified` - The Date/Time the entry was modified
