@@ -39,7 +39,8 @@ Example object for News Article on creation:
 {
   ...metricExample,
   body: {
-    dateCreated: '2018-06-20T16:00:00Z',
+    datePublished: '2018-06-20T16:00:00Z',
+    description: 'The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.',
     sentiment: {
       caps: [
         'WARNING'
@@ -69,19 +70,68 @@ Example object for News Article on creation:
 ```
 
 #### Trend, `type: 'trend'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+    value: 'Brexit',
+    aka: [
+      'United Kingdom European Union membership referendum, 2016',
+      'United Kingdom withdrawal from the European Union'
+    ]
+  },
+  type: 'trend'
+}
+```
 
 #### Alexa Ranking, `type: 'ranking'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+  },
+  type: 'ranking'
+}
+```
 
 #### Circulation (by year), `type: 'circulation'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+    label: '2018',
+    value: '3,000,005'
+  },
+  type: 'circulation'
+}
+```
 
 #### Press Complaint, `type: 'complaint'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+  },
+  type: 'complaint'
+}
+```
 
 #### Price, `type: 'price'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+  },
+  type: 'price'
+}
+```
 
 #### Fact Check, `type: 'factcheck'`
-blurb
+```
+{
+  ...metricExample,
+  body: {
+  },
+  type: 'factcheck'
+}
+```
