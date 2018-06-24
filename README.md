@@ -121,6 +121,8 @@ Example object for News Article on creation:
 {
   ...metricExample,
   body: {
+    title: 'The Mail On Sunday',
+    value: 2.80
   },
   type: 'price'
 }
