@@ -26,9 +26,8 @@ Firstly, I should add that a `metric` can be of the following types:
 Example object for `metric` to be used in the _type_ examples:
 ```
 const metricExample = {
-  publicationId: '5b2a9ec9e7179a589285988a',
-  dateCreated: '2018-06-20T16:00:00Z',
-  dateModified: '2018-06-20T16:00:00Z'
+  "dateCreated": 1529874315438
+  "dateModified": 1529874315438
 }
 ```
 
@@ -38,34 +37,37 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-    datePublished: '2018-06-20T16:00:00Z',
-    description: 'The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.',
-    sentiment: {
-      caps: [
-        'WARNING'
-      ],
-      positive: [
-        'join'
-      ],
-      negative: [
-        'threatens'
-      ],
-      score: {
-        caps: 0,
-        sentiment: -2,
-        total: -2
-      }
-    },
-    title: 'BMW threatens to join Airbus in Brexit WARNING',
-    trends: [
-      '5b2a9ec9e7179a589285988a',
-      '5b2a9ec9e7179a589285988b',
-      '5b2a9ec9e7179a589285988c'
+  "datePublished": "2018-06-20T16:00:00Z",
+  "description": "The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.",
+  "factCheck": [
+    "5b2a9ec9e7179a589285988a",
+    "5b2a9ec9e7179a589285988b",
+    "5b2a9ec9e7179a589285988c"
+  ],
+  "sentiment": {
+    "caps": [
+      "WARNING"
     ],
-    url: 'https://www.bbc.co.uk/news/business-44582831'
+    "positive": [
+      "join"
+    ],
+    "negative": [
+      "threatens"
+    ],
+    "score": {
+      "caps": 0,
+      "sentiment": -2,
+      "total": -2
+    }
   },
-  type: 'article'
+  "title": "BMW threatens to join Airbus in Brexit WARNING",
+  "trends": [
+    "5b2a9ec9e7179a589285988a",
+    "5b2a9ec9e7179a589285988b",
+    "5b2a9ec9e7179a589285988c"
+  ],
+  "url": "https://www.bbc.co.uk/news/business-44582831",
+  "type": "article"
 }
 ```
 
@@ -73,13 +75,11 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-    value: 'Brexit',
-    aka: [
-      'United Kingdom European Union membership referendum, 2016',
-      'United Kingdom withdrawal from the European Union'
-    ]
-  },
+  title: 'Brexit',
+  disambiguation: [
+    'United Kingdom European Union membership referendum, 2016',
+    'United Kingdom withdrawal from the European Union'
+  ],
   type: 'trend'
 }
 ```
@@ -88,8 +88,6 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-  },
   type: 'ranking'
 }
 ```
@@ -98,10 +96,8 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-    label: '2018',
-    value: '3,000,005'
-  },
+  title: '2018',
+  value: '3,000,005',
   type: 'circulation'
 }
 ```
@@ -110,8 +106,6 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-  },
   type: 'complaint'
 }
 ```
@@ -120,10 +114,8 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-    title: 'The Mail On Sunday',
-    value: 2.80
-  },
+  title: 'The Mail On Sunday',
+  value: 2.80,
   type: 'price'
 }
 ```
@@ -132,8 +124,6 @@ Example object for News Article on creation:
 ```
 {
   ...metricExample,
-  body: {
-  },
   type: 'factcheck'
 }
 ```

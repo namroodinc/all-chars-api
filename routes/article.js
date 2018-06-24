@@ -1,33 +1,30 @@
-const express = require('express');
-const mongoose = require('mongoose');
+import express from 'express';
+import mongoose from 'mongoose';
+import bodyparser from 'body-parser';
+
 const route = express.Router();
-const bodyparser = require('body-parser');
-const bodyParser = bodyparser.json({ limit: "50mb" });
+const bodyParserLimit = bodyparser.json({
+  limit: '50mb'
+});
 
-const Article = require('../models/articleModel').Article;
+import articleModel from '../models/articleModel';
+import options from '../constants/options';
 
-const options = {
-  autoIndex: false, // Don't build indexes
-  reconnectTries: 3, // Never stop trying to reconnect
-  reconnectInterval: 500, // Reconnect every 500ms
-  poolSize: 10, // Maintain up to 10 socket connections
-  // If not connected, return errors immediately rather than waiting for reconnect
-  bufferMaxEntries: 0
-};
+const Article = articleModel.Article;
 
-route.post('/createArticle', bodyParser, (req, res) => {
+route.post('/createArticle', bodyParserLimit, (req, res) => {
 
   const creationDetails = {
     dateCreated: Date.now(),
     dateModified: Date.now(),
-    type: req.body.data.type
+    type: req.body.type
   };
 
   const newArticle = new Article(
     Object
       .assign(
         creationDetails,
-        req.body.data
+        req.body
       )
   );
   const updatedData = (
@@ -35,15 +32,17 @@ route.post('/createArticle', bodyParser, (req, res) => {
       .assign(
         {
           dateModified: Date.now(),
-          type: req.body.data.type
+          type: req.body.type
         },
-        req.body.data
+        req.body
       )
   );
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
-      res.status(500).send(error.message)
+      res
+        .status(500)
+        .send(error.message)
     } else {
       processId(req.body.id)
     }
@@ -59,39 +58,49 @@ route.post('/createArticle', bodyParser, (req, res) => {
 
   function findArticle(id) {
     Article.findById(id, function (err, results) {
-      if(results) {
-        updateArticle(id)
+      if (results) {
+        updateArticle(id);
       } else {
-        saveArticle()
+        saveArticle();
       }
     });
   }
 
   function saveArticle() {
-    newArticle.save(function (err, mongoResponse) {
-      if (err){
-        res.status(500).send(err.message)
-      } else {
-        res.status(200).send({
-          id: mongoResponse._id.toString(),
-          message: "Article has been saved"
-        })
-      }
-    });
+    newArticle
+      .save(function (err, mongoResponse) {
+        if (err) {
+          res
+            .status(500)
+            .send(err.message);
+        } else {
+          res
+            .status(200)
+            .send({
+              id: mongoResponse._id.toString(),
+              message: "Article has been saved"
+            });
+        }
+      });
   }
 
   function updateArticle(id) {
-    Article.findByIdAndUpdate(id, updatedData, function (err) {
-      if(err) {
-        res.status(500).send(err.message)
-      } else {
-        res.status(200).send({
-          id: id,
-          message: "Article has been updated"
-        })
-      }
-    });
+    Article
+      .findByIdAndUpdate(id, updatedData, function (err) {
+        if (err) {
+          res
+            .status(500)
+            .send(err.message);
+        } else {
+          res
+            .status(200)
+            .send({
+              id,
+              message: "Article has been updated"
+            });
+        }
+      });
   }
 });
 
-module.exports = route;
+export default route;

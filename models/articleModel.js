@@ -1,14 +1,18 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const modelSchema = mongoose.Schema({
   dateCreated: Number,
   dateModified: Number,
-  body: mongoose.Schema.Types.Mixed,
+  datePublished: String,
+  factCheck: [],
+  sentiment: mongoose.Schema.Types.Mixed,
+  title: String,
+  trends: [],
+  url: String,
   type: String
 });
 
 const Article = mongoose.model('Article', modelSchema);
-
-module.exports = {
+export default {
   Article
 };
