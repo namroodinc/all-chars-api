@@ -1,11 +1,11 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import bodyparser from 'body-parser';
+import bodyParser from 'body-parser';
 
-const route = express.Router();
-const bodyParserLimit = bodyparser.json({
+const bodyParserLimit = bodyParser.json({
   limit: '50mb'
 });
+const route = express.Router();
 
 import articleModel from '../models/articleModel';
 import options from '../constants/options';

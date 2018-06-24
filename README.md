@@ -35,39 +35,43 @@ const metricExample = {
 
 Example object for News Article on creation:
 ```
-{
-  ...metricExample,
-  "datePublished": "2018-06-20T16:00:00Z",
-  "description": "The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.",
-  "factCheck": [
-    "5b2a9ec9e7179a589285988a",
-    "5b2a9ec9e7179a589285988b",
-    "5b2a9ec9e7179a589285988c"
-  ],
-  "sentiment": {
-    "caps": [
-      "WARNING"
-    ],
-    "positive": [
-      "join"
-    ],
-    "negative": [
-      "threatens"
-    ],
-    "score": {
-      "caps": 0,
-      "sentiment": -2,
-      "total": -2
+Object
+  .assign(
+    metricExample,
+    {
+      "datePublished": "2018-06-20T16:00:00Z",
+      "description": "The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.",
+      "factCheck": [
+        "5b2a9ec9e7179a589285988a",
+        "5b2a9ec9e7179a589285988b",
+        "5b2a9ec9e7179a589285988c"
+      ],
+      "sentiment": {
+        "caps": [
+          "WARNING"
+        ],
+        "positive": [
+          "join"
+        ],
+        "negative": [
+          "threatens"
+        ],
+        "score": {
+          "caps": 0,
+          "sentiment": -2,
+          "total": -2
+        }
+      },
+      "title": "BMW threatens to join Airbus in Brexit WARNING",
+      "trends": [
+        "5b2a9ec9e7179a589285988a",
+        "5b2a9ec9e7179a589285988b",
+        "5b2a9ec9e7179a589285988c"
+      ],
+      "url": "https://www.bbc.co.uk/news/business-44582831",
+      "type": "article"
     }
-  },
-  "title": "BMW threatens to join Airbus in Brexit WARNING",
-  "trends": [
-    "5b2a9ec9e7179a589285988a",
-    "5b2a9ec9e7179a589285988b",
-    "5b2a9ec9e7179a589285988c"
-  ],
-  "url": "https://www.bbc.co.uk/news/business-44582831",
-  "type": "article"
+  )
 }
 ```
 
