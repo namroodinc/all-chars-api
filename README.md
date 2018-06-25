@@ -3,6 +3,15 @@
 ## What is this?
 `pt-newsrater` is the API for "PT".
 
+## Getting started
+1. Clone the repo locally
+2. Add the following environment variables to your `.env` file
+* `MONGODB_URI=`_get from mLabs_
+* `APIKEY=`_get from mLabs_
+* `NODE_ENV=dev`
+* `PORT=5050`
+3. Run `npm run start` in your terminal
+
 ## Data Schemas
 
 ### Publications
@@ -58,17 +67,22 @@ A `metric` can be one of the following types:
 * `type` - The Type of `metric`, see above. (`string`)
 * `body` - Contains specific values related to the type of `metric`. (`object`)
 
+## API calls
+```
+// TODO
+```
+
+## Postman Examples
+
 #### Publication
 Example object for Publication on creation (copy & paste in Postman):
 ```
 {
-	"name": "The Daily Telegraph",
-	"newsApiId": "the-telegraph",
-	"url": "https://www.telegraph.co.uk"
+  "name": "The Daily Telegraph",
+  "newsApiId": "the-telegraph",
+  "url": "https://www.telegraph.co.uk"
 }
 ```
-
-## Postman Examples
 
 #### News Article
 Example object for News Article on creation (copy & paste in Postman):
