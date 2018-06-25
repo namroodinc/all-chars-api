@@ -57,6 +57,16 @@ A `metric` can be one of the following types:
 * `type` - The Type of `metric`, see above. (`string`)
 * `body` - Contains specific values related to the type of `metric`. (`object`)
 
+#### Publication
+Example object for Publication on creation (copy & paste in Postman):
+```
+{
+	"name": "The Daily Telegraph",
+	"newsApiId": "the-telegraph",
+	"url": "https://www.telegraph.co.uk"
+}
+```
+
 #### News Article
 Example object for News Article on creation (copy & paste in Postman):
 ```
