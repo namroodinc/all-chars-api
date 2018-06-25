@@ -3,8 +3,7 @@
 ## What is this?
 `pt-newsrater` is the API for "PT".
 
-## Data collected
-The data that is collected is:
+## Data Schemas
 
 ### Publications
 The `Publication` schema:
@@ -42,7 +41,9 @@ The `Article` schema:
 ```
 
 ### Trends
+```
 // TODO
+```
 
 ### Metrics
 A `metric` can be one of the following types:
@@ -66,6 +67,8 @@ Example object for Publication on creation (copy & paste in Postman):
 	"url": "https://www.telegraph.co.uk"
 }
 ```
+
+## Postman Examples
 
 #### News Article
 Example object for News Article on creation (copy & paste in Postman):
