@@ -5,6 +5,7 @@ const modelSchema = mongoose.Schema({
   dateModified: Number,
   datePublished: String,
   factCheck: [],
+  publicationId: String,
   sentiment: mongoose.Schema.Types.Mixed,
   title: String,
   trends: [],
