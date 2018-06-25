@@ -4,12 +4,48 @@
 `pt-newsrater` is the API for "PT".
 
 ## Data collected
-The following data is collected:
+The data that is collected is:
 
-### A typical `metric` object
-Firstly, I should add that a `metric` can be of the following types:
-* News Article, `type: 'article'`
-* Trend, `type: 'trend'`
+### Publications
+The `Publication` schema:
+```
+{
+  dateCreated: Number,
+  dateModified: Number,
+  disambiguation: String,
+  featured: {
+    type: Boolean,
+    default: false
+  },
+  name: String,
+  newsApiId: String,
+  shortenedUrl: String,
+  url: String
+}
+```
+
+### News Articles
+The `Article` schema:
+```
+{
+  dateCreated: Number,
+  dateModified: Number,
+  datePublished: String,
+  factCheck: [],
+  publicationId: String,
+  sentiment: mongoose.Schema.Types.Mixed,
+  title: String,
+  trends: [],
+  url: String,
+  type: String
+}
+```
+
+### Trends
+// TODO
+
+### Metrics
+A `metric` can be one of the following types:
 * Alexa Ranking, `type: 'ranking'`
 * Circulation (by year), `type: 'circulation'`
 * Press Complaint, `type: 'complaint'`
@@ -18,116 +54,74 @@ Firstly, I should add that a `metric` can be of the following types:
 
 `metric` entries share the following object values:
 * `publicationId` - The ID of the Publication. (`string`)
-* `dateCreated` - The Date/Time the entry was created. (`timestamp`)
-* `dateModified` - The Date/Time the entry was modified. (`timestamp`)
 * `type` - The Type of `metric`, see above. (`string`)
 * `body` - Contains specific values related to the type of `metric`. (`object`)
 
-Example object for `metric` to be used in the _type_ examples:
-```
-const metricExample = {
-  "dateCreated": 1529874315438
-  "dateModified": 1529874315438
-}
-```
-
-#### News Article, `type: 'article'`
-
-Example object for News Article on creation:
-```
-Object
-  .assign(
-    metricExample,
-    {
-      "datePublished": "2018-06-20T16:00:00Z",
-      "description": "The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.",
-      "factCheck": [
-        "5b2a9ec9e7179a589285988a",
-        "5b2a9ec9e7179a589285988b",
-        "5b2a9ec9e7179a589285988c"
-      ],
-      "sentiment": {
-        "caps": [
-          "WARNING"
-        ],
-        "positive": [
-          "join"
-        ],
-        "negative": [
-          "threatens"
-        ],
-        "score": {
-          "caps": 0,
-          "sentiment": -2,
-          "total": -2
-        }
-      },
-      "title": "BMW threatens to join Airbus in Brexit WARNING",
-      "trends": [
-        "5b2a9ec9e7179a589285988a",
-        "5b2a9ec9e7179a589285988b",
-        "5b2a9ec9e7179a589285988c"
-      ],
-      "url": "https://www.bbc.co.uk/news/business-44582831",
-      "type": "article"
-    }
-  )
-}
-```
-
-#### Trend, `type: 'trend'`
+#### News Article
+Example object for News Article on creation (copy & paste in Postman):
 ```
 {
-  ...metricExample,
-  title: 'Brexit',
-  disambiguation: [
-    'United Kingdom European Union membership referendum, 2016',
-    'United Kingdom withdrawal from the European Union'
+  "datePublished": "2018-06-20T16:00:00Z",
+  "description": "The car giant BMW has followed plane-maker Airbus in warning about the consequences of Brexit uncertainty.",
+  "factCheck": [
+    "5b2a9ec9e7179a589285988a",
+    "5b2a9ec9e7179a589285988b",
+    "5b2a9ec9e7179a589285988c"
   ],
-  type: 'trend'
+  "sentiment": {
+    "caps": [
+      "WARNING"
+    ],
+    "positive": [
+      "join"
+    ],
+    "negative": [
+      "threatens"
+    ],
+    "score": {
+      "caps": 0,
+      "sentiment": -2,
+      "total": -2
+    }
+  },
+  "title": "Lamborghini threatens to join Airbus in Brexit WARNING",
+  "trends": [
+    "5b2a9ec9e7179a589285988a",
+    "5b2a9ec9e7179a589285988b",
+    "5b2a9ec9e7179a589285988c"
+  ],
+  "url": "https://www.bbc.co.uk/news/business-44582831",
+  "type": "article"
 }
 ```
 
-#### Alexa Ranking, `type: 'ranking'`
+#### Metrics
+##### Trend
 ```
-{
-  ...metricExample,
-  type: 'ranking'
-}
+// TODO
 ```
 
-#### Circulation (by year), `type: 'circulation'`
+##### Alexa Ranking
 ```
-{
-  ...metricExample,
-  title: '2018',
-  value: '3,000,005',
-  type: 'circulation'
-}
+// TODO
 ```
 
-#### Press Complaint, `type: 'complaint'`
+##### Circulation (by year)
 ```
-{
-  ...metricExample,
-  type: 'complaint'
-}
+// TODO
 ```
 
-#### Price, `type: 'price'`
+##### Press Complaint
 ```
-{
-  ...metricExample,
-  title: 'The Mail On Sunday',
-  value: 2.80,
-  type: 'price'
-}
+// TODO
 ```
 
-#### Fact Check, `type: 'factcheck'`
+##### Price
 ```
-{
-  ...metricExample,
-  type: 'factcheck'
-}
+// TODO
+```
+
+##### Fact Check
+```
+// TODO
 ```
