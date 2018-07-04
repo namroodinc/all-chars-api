@@ -4,6 +4,7 @@ import cors from 'cors';
 const app = express();
 
 import article from './routes/article';
+import publication from './routes/publication';
 
 const corsConfig = {
   methods: ['GET'],
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', cors(corsConfig), article);
+app.use('/api', cors(corsConfig), publication);
 
 app.listen(process.env.PORT, () => {
   console.log(

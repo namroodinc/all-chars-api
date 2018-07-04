@@ -7,20 +7,19 @@ const bodyParserLimit = bodyParser.json({
 });
 const route = express.Router();
 
-import articleModel from '../models/articleModel';
+import publicationModel from '../models/publicationModel';
 import options from '../constants/options';
 
-const Article = articleModel.Article;
+const Publication = publicationModel.Publication;
 
-route.post('/create/article', bodyParserLimit, (req, res) => {
+route.post('/create/publication', bodyParserLimit, (req, res) => {
 
   const creationDetails = {
     dateCreated: Date.now(),
-    dateModified: Date.now(),
-    type: req.body.type
+    dateModified: Date.now()
   };
 
-  const newArticle = new Article(
+  const newPublication = new Publication(
     Object
       .assign(
         creationDetails,
@@ -31,8 +30,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     Object
       .assign(
         {
-          dateModified: Date.now(),
-          type: req.body.type
+          dateModified: Date.now()
         },
         req.body
       )
@@ -50,24 +48,24 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
   function processId(id) {
     if (id === '' || id === undefined) {
-      saveArticle();
+      savePublication();
     } else {
-      findArticle(id)
+      findPublication(id)
     }
   }
 
-  function findArticle(id) {
-    Article.findById(id, function (err, results) {
+  function findPublication(id) {
+    Publication.findById(id, function (err, results) {
       if (results) {
-        updateArticle(id);
+        updatePublication(id);
       } else {
-        saveArticle();
+        savePublication();
       }
     });
   }
 
-  function saveArticle() {
-    newArticle
+  function savePublication() {
+    newPublication
       .save(function (err, mongoResponse) {
         if (err) {
           res
@@ -78,14 +76,14 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
             .status(200)
             .send({
               id: mongoResponse._id.toString(),
-              message: "Article has been created"
+              message: "Publication has been created"
             });
         }
       });
   }
 
-  function updateArticle(id) {
-    Article
+  function updatePublication(id) {
+    Publication
       .findByIdAndUpdate(id, updatedData, function (err) {
         if (err) {
           res
@@ -96,7 +94,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
             .status(200)
             .send({
               id,
-              message: "Article has been updated"
+              message: "Publication has been updated"
             });
         }
       });

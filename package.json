@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "babel-node index.js",
+    "publicationsToDb": "babel-node actions/publicationsToDb.js",
     "lint": "eslint -c .eslintrc src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,6 +32,8 @@
     "moment": "^2.22.0",
     "mongoose": "^5.1.0",
     "osmosis": "^1.1.4",
+    "papaparse": "^4.5.0",
+    "read-file": "^0.2.0",
     "sentiment": "^4.1.0",
     "superagent": "^3.8.2"
   },
