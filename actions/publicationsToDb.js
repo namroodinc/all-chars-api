@@ -12,7 +12,7 @@ read("./temp_files/publications.csv", (err, buffer) => {
       const dataArray = data.map(publication => {
         return new Promise((resolve) => {
           request
-            .post('http://localhost:5050/api/create/publication')
+            .post(`http://localhost:${process.env.PORT}/api/create/publication`)
             .send(publication)
             .set('X-CORS-TOKEN', process.env.APIKEY)
             .set('Content-Type', 'application/json')
@@ -23,7 +23,7 @@ read("./temp_files/publications.csv", (err, buffer) => {
       });
 
       return Promise.all(dataArray).then((values) => {
-        console.log(values);
+        console.log(`${values.length} publications added to the database.`);
       });
     }
   });

@@ -5,6 +5,7 @@ const app = express();
 
 import article from './routes/article';
 import publication from './routes/publication';
+import publicationSearch from './routes/publicationSearch';
 
 const corsConfig = {
   methods: ['GET'],
@@ -22,6 +23,7 @@ app.use((req, res, next) => {
 
 app.use('/api', cors(corsConfig), article);
 app.use('/api', cors(corsConfig), publication);
+app.use('/api', cors(corsConfig), publicationSearch);
 
 app.listen(process.env.PORT, () => {
   console.log(
