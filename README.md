@@ -10,6 +10,7 @@
 * `APIKEY=`_get from mLabs_
 * `NODE_ENV=dev`
 * `PORT=5050`
+* `NEWS_APIKEY=`_get from newsapi.org_
 3. Run `npm run start` in your terminal
 
 ## Data Schemas

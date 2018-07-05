@@ -12,8 +12,9 @@ import options from '../constants/options';
 
 const Publication = publicationModel.Publication;
 
-route.post('/search', bodyParserLimit, (req, res) => {
+route.post('/search/publications', bodyParserLimit, (req, res) => {
   const searchTerm = req.body.searchTerm;
+  const newsApiIdOrNot = req.body.newsApiIdOrNot || false;
 
   const idQuery = Publication.findById({
     _id: searchTerm
@@ -24,13 +25,19 @@ route.post('/search', bodyParserLimit, (req, res) => {
       {
         'name': {
           '$regex': new RegExp(searchTerm, 'i')
+        },
+        'newsApiId': {
+          '$nin': newsApiIdOrNot ? [
+            null,
+            ''
+          ] : []
         }
       }
     ]
   });
 
   pageQuery
-    .select('name');
+    .select('name newsApiId');
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {
@@ -58,7 +65,6 @@ route.post('/search', bodyParserLimit, (req, res) => {
         res.status(200);
       } else {
         pageQuery.exec(function(err, results) {
-          const pages = pageResults.length;
           if (!results) {
             res.status(200);
           } else {

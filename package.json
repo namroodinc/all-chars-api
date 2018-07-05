@@ -4,8 +4,9 @@
   "description": "pt-newsrater is the API for \"PT\".",
   "main": "index.js",
   "scripts": {
+    "action:add:article:newsApi": "babel-node actions/articleToDb.js",
+    "action:add:publication": "babel-node actions/publicationsToDb.js",
     "start": "babel-node index.js",
-    "publicationsToDb": "babel-node actions/publicationsToDb.js",
     "lint": "eslint -c .eslintrc src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
