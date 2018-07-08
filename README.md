@@ -11,6 +11,7 @@
 * `NODE_ENV=dev`
 * `PORT=5050`
 * `NEWS_APIKEY=`_get from newsapi.org_
+* `DANDELION_APIKEY=`_get from dandelion.eu_
 3. Run `npm run start` in your terminal
 
 ## Data Schemas
