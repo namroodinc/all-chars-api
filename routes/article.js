@@ -16,8 +16,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
   const creationDetails = {
     dateCreated: Date.now(),
-    dateModified: Date.now(),
-    type: req.body.type
+    dateModified: Date.now()
   };
 
   const newArticle = new Article(
@@ -31,8 +30,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     Object
       .assign(
         {
-          dateModified: Date.now(),
-          type: req.body.type
+          dateModified: Date.now()
         },
         req.body
       )

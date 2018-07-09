@@ -4,7 +4,7 @@ import request from "superagent";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    // 'searchTerm': 'The Washington Post', // TODO: Remove 'The Washington Post' after testing
+    'searchTerm': 'The Guardian', // TODO: Remove 'The Washington Post' after testing
     'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -16,7 +16,10 @@ request
         request
           .get(`https://newsapi.org/v2/top-headlines?sources=${publication.newsApiId}&apiKey=${process.env.NEWS_APIKEY}`)
           .end((err, res) => {
-            resolve(res);
+            resolve({
+              publicationId: publication['_id'],
+              res
+            });
           });
       });
     });
@@ -25,22 +28,30 @@ request
       .then((publications) => {
 
         publications.map(publication => {
-
-          const articlesArray = publication.body.articles.map(article => {
+          const { publicationId, res } = publication;
+          const articlesArray = res.body.articles.map(article => {
             return new Promise((resolve) => {
               const title = encodeURIComponent(article.title.trim());
 
               request
-                .get(`https://api.dandelion.eu/datatxt/nex/v1/?text=${title}&min_confidence=0.7&lang=en&token=${process.env.DANDELION_APIKEY}`)
+                .get(`https://api.dandelion.eu/datatxt/nex/v1/?text=${title}&lang=en&token=${process.env.DANDELION_APIKEY}`)
                 .end((err, res) => {
+                  const { author, description, publishedAt, title, url, urlToImage } = article;
+
                   const trends = res
                     .body
                     .annotations
                     .map(annotation => annotation.title);
 
                   resolve({
-                    title: article.title,
-                    trends
+                    authors: author.split(', '),
+                    datePublished: publishedAt,
+                    description,
+                    publicationId,
+                    title,
+                    trends,
+                    url,
+                    urlToImage
                   });
                 });
             });
