@@ -37,7 +37,7 @@ route.post('/search/publications', bodyParserLimit, (req, res) => {
   });
 
   pageQuery
-    .select('name newsApiId');
+    .select('name newsApiId url');
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {
