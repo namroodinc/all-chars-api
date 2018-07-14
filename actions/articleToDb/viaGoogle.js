@@ -9,7 +9,7 @@ import { parseString } from "xml2js";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    // 'searchTerm': 'The New Yorker',
+    'searchTerm': 'The New Yorker'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -55,7 +55,7 @@ request
 
               metadata(url)
                 .then((metadata) => {
-                  const { general, openGraph, twitter } = metadata;
+                  const { general, jsonLd, openGraph, twitter } = metadata;
 
                   const { author, keywords } = general;
                   const { tag } = openGraph;
@@ -72,7 +72,7 @@ request
                   const urlToImage = openGraph.image.url || '';
 
                   resolve({
-                    authors,
+                    authors: jsonLd.author.name || authors,
                     datePublished,
                     description,
                     publicationId,
