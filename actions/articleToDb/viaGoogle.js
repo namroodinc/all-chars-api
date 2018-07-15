@@ -6,10 +6,12 @@ import { parseString } from "xml2js";
 // import Sentiment from "sentiment";
 // const sentiment = new Sentiment();
 
+// console.log(process.env.NEWS_SOURCE);
+
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'The New Yorker'
+    'searchTerm': 'New York Times'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -19,7 +21,7 @@ request
     const publicationArray = res.body.results.map(publication => {
       return new Promise((resolve) => {
         const { domain, tld } = parseDomain(publication.url);
-
+        console.log(`${process.env.GOOGLE_NEWS_URL}/site:${domain}.${tld}`);
         request
           .get(`${process.env.GOOGLE_NEWS_URL}/site:${domain}.${tld}`)
           .buffer()
@@ -60,23 +62,39 @@ request
                   const { author, keywords } = general;
                   const { tag } = openGraph;
 
-                  const authors = author === undefined ? [] : author.split(',');
+                  // authors
+                  let authors = author === undefined ? [] : author.split(',');
+                  if (jsonLd !== undefined) if (jsonLd.author !== undefined) authors = jsonLd.author.name;
 
-                  const datePublished = openGraph['published_time'] || pubDate[0];
-                  const description = twitter.description || openGraph.description || general.description;
+                  // datePublished
+                  let datePublished = pubDate[0];
+                  if (openGraph !== undefined) if (openGraph['published_time'] !== undefined) datePublished = openGraph['published_time'];
 
-                  const title = openGraph.title || general.title;
+                  // description
+                  let description = '';
+                  if (general !== undefined) if (general.description !== undefined) description = general.description;
+                  if (openGraph !== undefined) if (openGraph.description !== undefined) description = openGraph.description;
+                  if (twitter !== undefined) if (twitter.description !== undefined) description = twitter.description;
+
+                  // title
+                  let title = '';
+                  if (general !== undefined) if (general.title !== undefined) title = general.title;
+                  if (openGraph !== undefined) if (openGraph.title !== undefined) title = openGraph.title;
+
+                  // trends
                   const trendsList = keywords || tag || [];
                   const trends = Array.isArray(trendsList) ? trendsList : trendsList.split(',');
 
-                  const urlToImage = openGraph.image.url || '';
+                  // urlToImage
+                  let urlToImage = '';
+                  if (openGraph !== undefined) if (openGraph.image !== undefined) urlToImage = openGraph.image.url;
 
                   resolve({
-                    authors: jsonLd.author.name || authors,
+                    authors,
                     datePublished,
                     description,
                     publicationId,
-                    // sentiment: sentimentAnalysis,
+                    // sentiment: sentiment.analyze(title),
                     title,
                     trends,
                     url,
