@@ -1,8 +1,5 @@
 require('dotenv').config();
 import request from "superagent";
-import Sentiment from "sentiment";
-
-const sentiment = new Sentiment();
 
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
@@ -41,8 +38,6 @@ request
                 .end((err, res) => {
                   const { author, description, publishedAt, title, url, urlToImage } = article;
 
-                  const sentimentAnalysis = sentiment.analyze(title);
-
                   const trends = res
                     .body
                     .annotations
@@ -53,7 +48,6 @@ request
                     datePublished: publishedAt,
                     description,
                     publicationId,
-                    sentiment: sentimentAnalysis,
                     title,
                     trends,
                     url,

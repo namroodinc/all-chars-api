@@ -37,7 +37,6 @@
     "papaparse": "^4.5.0",
     "parse-domain": "^2.1.2",
     "read-file": "^0.2.0",
-    "sentiment": "^5.0.1",
     "superagent": "^3.8.2",
     "xml2js": "^0.4.19"
   },

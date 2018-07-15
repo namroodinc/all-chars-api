@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const modelSchema = mongoose.Schema({
   dateCreated: Number,
   dateModified: Number,
+  avatar: String,
   disambiguation: String,
   featured: {
     type: Boolean,

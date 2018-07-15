@@ -3,15 +3,13 @@ import metadata from "html-metadata";
 import parseDomain from "parse-domain";
 import request from "superagent";
 import { parseString } from "xml2js";
-// import Sentiment from "sentiment";
-// const sentiment = new Sentiment();
 
 // console.log(process.env.NEWS_SOURCE);
 
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'New York Times'
+    'searchTerm': 'Metro'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -34,6 +32,7 @@ request
                 if (stringifyResults !== undefined) {
                   resolve({
                     publicationId: publication['_id'],
+                    publicationName: publication.name,
                     res: JSON.parse(stringifyResults)
                   });
                 }
@@ -47,7 +46,7 @@ request
       .then((publications) => {
 
         publications.map(publication => {
-          const { publicationId, res } = publication;
+          const { publicationId, publicationName, res } = publication;
 
           const articlesArray = res.map(article => {
             return new Promise((resolve) => {
@@ -94,7 +93,7 @@ request
                     datePublished,
                     description,
                     publicationId,
-                    // sentiment: sentiment.analyze(title),
+                    publicationName,
                     title,
                     trends,
                     url,
@@ -106,7 +105,23 @@ request
 
           return Promise.all(articlesArray)
             .then((articles) => {
-              console.log(articles);
+              const articlesToPost = articles.map(article => {
+                return new Promise((resolve) => {
+                  request
+                    .post(`http://localhost:${process.env.PORT}/api/create/article`)
+                    .send(article)
+                    .set('X-CORS-TOKEN', process.env.APIKEY)
+                    .set('Content-Type', 'application/json')
+                    .end((err, res) => {
+                      resolve(res);
+                    });
+                })
+              });
+
+              return Promise.all(articlesToPost)
+                .then((articles) => {
+                  console.log(articles.length, ' articles added');
+                });
             });
         });
 
