@@ -14,6 +14,9 @@ const Article = articleModel.Article;
 
 route.post('/search/articles', bodyParserLimit, (req, res) => {
   const searchTerm = req.body.searchTerm;
+  const page = req.body.page;
+  // const author = req.body.author;
+  // const trend = req.body.trend;
 
   const idQuery = Article.findById({
     _id: searchTerm
@@ -27,10 +30,24 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
         }
       }
     ]
-  });
+  })
+    .find({
+      // 'date': { $gte: req.body.minDate, $lte: req.body.maxDate },
+      // 'authors': {
+      //   '$regex': new RegExp(author, 'i')
+      // },
+      // 'trends': {
+      //   '$regex': new RegExp(trend, 'i')
+      // }
+    })
+    .sort({
+      'modified': -1
+    });
 
   pageQuery
-    .select('title description authors trends');
+    .select('title description authors trends')
+    .skip((page || 0) * 10)
+    .limit(10);
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {
@@ -63,11 +80,11 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
           } else {
             res.status(200).send({
               results
-            })
+            });
           }
-        })
+        });
       }
-    })
+    });
   }
 });
 
