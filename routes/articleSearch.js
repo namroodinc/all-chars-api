@@ -17,6 +17,7 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
   const page = req.body.page;
   // const author = req.body.author;
   // const trend = req.body.trend;
+  console.log(searchTerm);
 
   const idQuery = Article.findById({
     _id: searchTerm
