@@ -8,9 +8,11 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
+// import authorModel from '../models/authorModel';
 import options from '../constants/options';
 
 const Article = articleModel.Article;
+// const Author = authorModel.Author;
 
 route.post('/create/article', bodyParserLimit, (req, res) => {
 

@@ -56,14 +56,24 @@ request
 
               metadata(url)
                 .then((metadata) => {
-                  const { general, jsonLd, openGraph, twitter } = metadata;
+                  const { general, jsonLd, openGraph, schemaOrg, twitter } = metadata;
 
                   const { author, keywords } = general;
                   const { tag } = openGraph;
 
+                  let schemaOrgProps = {};
+                  if (schemaOrg !== undefined) {
+                    schemaOrg.items.map(item => {
+                      if (item.properties.author !== undefined) {
+                        schemaOrgProps.author = item.properties.author[0].properties.name;
+                      }
+                    });
+                  }
+
                   // authors
                   let authors = author === undefined ? [] : author.split(',');
                   if (jsonLd !== undefined) if (jsonLd.author !== undefined) authors = jsonLd.author.name;
+                  if (schemaOrgProps.author !== undefined) authors = schemaOrgProps.author;
 
                   // datePublished
                   let datePublished = pubDate[0];
