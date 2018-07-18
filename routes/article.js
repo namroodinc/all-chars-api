@@ -8,11 +8,9 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
-// import authorModel from '../models/authorModel';
-import options from '../constants/options';
+const { Author, Article } = articleModel;
 
-const Article = articleModel.Article;
-// const Author = authorModel.Author;
+import options from '../constants/options';
 
 route.post('/create/article', bodyParserLimit, (req, res) => {
 
@@ -21,11 +19,21 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     dateModified: Date.now()
   };
 
+  const newAuthors = req.body.authors.map(author => {
+    return new Author({
+      _id: new mongoose.Types.ObjectId(),
+      name: author
+    })
+  });
+
   const newArticle = new Article(
     Object
       .assign(
         creationDetails,
-        req.body
+        req.body,
+        {
+          authors: newAuthors.map(a => a)
+        }
       )
   );
   const updatedData = (
@@ -34,7 +42,10 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
         {
           dateModified: Date.now()
         },
-        req.body
+        req.body,
+        {
+          authors: newAuthors.map(a => a)
+        }
       )
   );
 
@@ -44,7 +55,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
         .status(500)
         .send(error.message)
     } else {
-      processId(req.body.id)
+      processId(req.body.id);
     }
   });
 
@@ -52,7 +63,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     if (id === '' || id === undefined) {
       saveArticle();
     } else {
-      findArticle(id)
+      findArticle(id);
     }
   }
 

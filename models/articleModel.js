@@ -1,10 +1,19 @@
 import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-const modelSchema = mongoose.Schema({
+const authorSchema = Schema({
+  _id: Schema.Types.ObjectId,
+  name: String
+});
+
+const articleSchema = Schema({
   dateCreated: Number,
   dateModified: Number,
   datePublished: String,
-  authors: [],
+  authors: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Author'
+  }],
   description: String,
   publicationId: String,
   publicationName: String,
@@ -16,7 +25,10 @@ const modelSchema = mongoose.Schema({
   type: String
 });
 
-const Article = mongoose.model('Article', modelSchema);
+const Author = mongoose.model('Author', authorSchema);
+const Article = mongoose.model('Article', articleSchema);
+
 export default {
+  Author,
   Article
 };

@@ -8,16 +8,15 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
-import options from '../constants/options';
+const { Article } = articleModel;
 
-const Article = articleModel.Article;
+import options from '../constants/options';
 
 route.post('/search/articles', bodyParserLimit, (req, res) => {
   const searchTerm = req.body.searchTerm;
   const page = req.body.page;
   // const author = req.body.author;
   // const trend = req.body.trend;
-  console.log(searchTerm);
 
   const idQuery = Article.findById({
     _id: searchTerm
