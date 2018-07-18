@@ -19,35 +19,12 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     dateModified: Date.now()
   };
 
-  const newAuthors = req.body.authors.map(author => {
+  const authors = req.body.authors.map(author => {
     return new Author({
       _id: new mongoose.Types.ObjectId(),
       name: author
     })
   });
-
-  const newArticle = new Article(
-    Object
-      .assign(
-        creationDetails,
-        req.body,
-        {
-          authors: newAuthors.map(a => a)
-        }
-      )
-  );
-  const updatedData = (
-    Object
-      .assign(
-        {
-          dateModified: Date.now()
-        },
-        req.body,
-        {
-          authors: newAuthors.map(a => a)
-        }
-      )
-  );
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
@@ -55,63 +32,73 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
         .status(500)
         .send(error.message)
     } else {
-      processId(req.body.id);
+      saveArticle();
     }
   });
 
-  function processId(id) {
-    if (id === '' || id === undefined) {
-      saveArticle();
-    } else {
-      findArticle(id);
-    }
-  }
-
-  function findArticle(id) {
-    Article.findById(id, function (err, results) {
-      if (results) {
-        updateArticle(id);
-      } else {
-        saveArticle();
-      }
-    });
-  }
-
   function saveArticle() {
-    newArticle
-      .save(function (err, mongoResponse) {
-        if (err) {
-          res
-            .status(500)
-            .send(err.message);
-        } else {
-          res
-            .status(200)
-            .send({
-              id: mongoResponse._id.toString(),
-              message: "Article has been created"
+
+    const authorSave = authors.map(author => {
+      return new Promise((resolve, reject) => {
+
+        (async () => {
+          let existingAuthor = await Author.findOne({
+            name: author.name
+          });
+
+          console.log('------------');
+          console.log(existingAuthor);
+
+          if (existingAuthor !== null) {
+            console.log('not saving ', existingAuthor.name);
+            resolve(existingAuthor)
+          } else {
+            console.log('saving ', author.name);
+            author.save((err) => {
+              if (err) reject();
+              resolve(author);
             });
-        }
+          };
+        })();
+
+      });
+    });
+
+    return Promise.all(authorSave)
+      .then(data => {
+        const article = new Article(
+          Object
+            .assign(
+              creationDetails,
+              req.body,
+              {
+                authors: data.map(data => data._id)
+              }
+            )
+        );
+
+        article.save((err, mongoResponse) => {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send({
+                id: mongoResponse._id.toString(),
+                message: "Article has been created"
+              });
+          }
+        });
       });
   }
 
-  function updateArticle(id) {
-    Article
-      .findByIdAndUpdate(id, updatedData, function (err) {
-        if (err) {
-          res
-            .status(500)
-            .send(err.message);
-        } else {
-          res
-            .status(200)
-            .send({
-              id,
-              message: "Article has been updated"
-            });
-        }
-      });
-  }
+});
+
+// TODO: this needs implementing
+route.post('/update/article/:articleId', bodyParserLimit, (req, res) => {
+  console.log(req.params.articleId);
 });
 
 export default route;

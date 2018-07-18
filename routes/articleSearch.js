@@ -45,7 +45,8 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
     });
 
   pageQuery
-    .select('title description authors trends')
+    .populate('authors')
+    .select('title description trends')
     .skip((page || 0) * 10)
     .limit(10);
 

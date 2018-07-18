@@ -13,7 +13,6 @@ const { Story, Person } = exampleModel;
 import options from '../constants/options';
 
 route.post('/create/example', bodyParserLimit, (req, res) => {
-
   const authors = req.body.authors.map((author, i) => {
     return new Person({
       _id: new mongoose.Types.ObjectId(),
@@ -41,8 +40,8 @@ route.post('/create/example', bodyParserLimit, (req, res) => {
           let doc = await Person.findOne({
             name: author.name
           });
-          console.log(doc);
-          console.log(author);
+
+          if (doc) resolve(doc);
 
           author.save((err) => {
             if (err) reject();
@@ -60,7 +59,7 @@ route.post('/create/example', bodyParserLimit, (req, res) => {
           author: data.map(data => data._id)
         });
 
-        story.save(function (err) {
+        story.save((err, mongoResponse) => {
           if (err) {
             res
               .status(500)
@@ -69,12 +68,50 @@ route.post('/create/example', bodyParserLimit, (req, res) => {
             res
               .status(200)
               .send({
+                id: mongoResponse._id.toString(),
                 message: "Story has been created"
               });
           }
         });
-      })
+      });
+
   }
+});
+
+route.post('/search/example', bodyParserLimit, (req, res) => {
+
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Story
+        .find({
+          $or: [
+            {
+              'title': {
+                '$regex': new RegExp(req.body.title, 'i')
+              }
+            }
+          ]
+        })
+        .populate('author')
+        .select('title')
+        .exec(function (err, story) {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send(story);
+          }
+        });
+    }
+  });
+
 });
 
 export default route;
