@@ -58,7 +58,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
               if (err) reject();
               resolve(author);
             });
-          };
+          }
         })();
 
       });

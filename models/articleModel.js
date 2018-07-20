@@ -16,8 +16,10 @@ const articleSchema = Schema({
     ref: 'Author'
   }],
   description: String,
-  publicationId: String,
-  publicationName: String,
+  publication: {
+    type: Schema.Types.ObjectId,
+    ref: 'Publication'
+  },
   shortUrl: String,
   title: String,
   trends: [],

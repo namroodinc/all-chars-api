@@ -9,7 +9,7 @@ import { parseString } from "xml2js";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'New Yorker'
+    'searchTerm': 'City A.M.'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -46,7 +46,7 @@ request
       .then((publications) => {
 
         publications.map(publication => {
-          const { publicationId, publicationName, res } = publication;
+          const { publicationId, res } = publication;
 
           const articlesArray = res.map(article => {
             return new Promise((resolve) => {
@@ -102,8 +102,7 @@ request
                     authors,
                     datePublished,
                     description,
-                    publicationId,
-                    publicationName,
+                    publication: publicationId,
                     title,
                     trends,
                     url,

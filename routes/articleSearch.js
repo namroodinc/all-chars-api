@@ -46,9 +46,10 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
 
   pageQuery
     .populate('authors')
-    .select('title description trends')
-    .skip((page || 0) * 10)
-    .limit(10);
+    .populate('publication')
+    .select('datePublished description title trends urlToImage')
+    .skip((page || 0) * 12)
+    .limit(12);
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {
