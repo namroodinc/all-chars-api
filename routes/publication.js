@@ -101,4 +101,9 @@ route.post('/create/publication', bodyParserLimit, (req, res) => {
   }
 });
 
+// TODO: this needs implementing
+route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) => {
+  console.log(req.params.publicationId);
+});
+
 export default route;

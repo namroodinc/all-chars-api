@@ -1,39 +1,40 @@
-name,disambiguation,url,newsApiId
-The Guardian,,theguardian.com,the-guardian-uk
-The Sun,Newspaper,thesun.co.uk,
-Metro,British newspaper,metro.co.uk,metro
-Daily Express,,express.co.uk,
-Daily Mail,,dailymail.co.uk,daily-mail
-Daily Mirror,,mirror.co.uk,mirror
-London Evening Standard,,standard.co.uk,
-The Daily Telegraph,,telegraph.co.uk,the-telegraph
-The Times,,thetimes.co.uk,
-Daily Star,,dailystar.co.uk,
-i,Newspaper,inews.co.uk,
-Daily Record,Scotland,dailyrecord.co.uk,
-City A.M.,,cityam.com,
-The Independent,,independent.co.uk,independent
-The New European,,theneweuropean.co.uk,
-The Sydney Morning Herald,,smh.com.au,
-Los Angeles Times,,latimes.com,
-Chicago Tribune,,chicagotribune.com,
-The Washington Post,,washingtonpost.com,the-washington-post
-USA Today,,usatoday.com,usa-today
-The Wall Street Journal,,wsj.com,the-wall-street-journal
-The New York Times,,nytimes.com,
-The Mercury News,,mercurynews.com,
-New York Daily News,,nydailynews.com,
-New York Post,,nypost.com,
-Chicago Sun-Times,,https://chicago.suntimes.com,
-The Hill,Newspaper,thehill.com,the-hill
-HuffPost,,huffpost.com,the-huffington-post
-The Economist,,economist.com,the-economist
-Breitbart News Network,,breitbart.com,breitbart-news
-Fox News,,foxnews.com,fox-news
-Bloomberg News,,bloomberg.com,bloomberg
-CNN,Cable News Network,cnn.com,cnn
-The New Yorker,,newyorker.com,
-Politico,,politico.com,politico
-Reuters,,reuters.com,reuters
-BBC News,,bbc.co.uk/news,bbc-news
-The Australian Financial Review,,afr.com.au,australian-financial-review
+name,disambiguation,url,newsApiId,twitterScreenName,country,headquarters,backgroundColor
+i,Newspaper,inews.co.uk,,theipaper,United Kingdom,"2 Derry St, Kensington, London W8 5TT, UK",#0084B4
+Breitbart News Network,,breitbart.com,breitbart-news,BreitbartNews,United States,"149 S Barrington Ave, Los Angeles, CA 90049, USA",#FF5402
+The Daily Telegraph,,telegraph.co.uk,the-telegraph,Telegraph,United Kingdom,"London, UK",#3B94D9
+The Australian Financial Review,,afr.com,australian-financial-review,FinancialReview,Australia,"Sydney NSW, Australia",#0084B4
+The Independent,,independent.co.uk,independent,Independent,United Kingdom,"2 Derry St, Kensington, London W8 5TT, UK",#FC051A
+The Sydney Morning Herald,,smh.com.au,,smh,Australia,"1 Darling Island Rd, Pyrmont NSW 2009, Australia",#119BF7
+USA Today,,usatoday.com,usa-today,USATODAY,United States,"7950 Jones Branch Dr, Tysons, VA 22102, USA",#0000FF
+City A.M.,,cityam.com,,CityAM,United Kingdom,"130 Fenchurch St, London EC3M 5LY, UK",#0084B4
+The New European,,theneweuropean.co.uk,,TheNewEuropean,United Kingdom,"Prospect House, Norwich NR1, UK",#2E3192
+Bloomberg News,,bloomberg.com,bloomberg,business,United Kingdom,"London, UK",#3B94D9
+The New York Times,,nytimes.com,,nytimes,United States,"New York Times Bldg, 620 8th Ave, New York, NY 10018, USA",#607696
+Daily Express,,express.co.uk,,Daily_Express,United Kingdom,"Lower Thames St, London EC3R 6DL, UK",#13AEB8
+The Times,,thetimes.co.uk,,thetimes,United Kingdom,"London Bridge, London SE1 9DD, UK",#000000
+The Economist,,economist.com,the-economist,TheEconomist,United Kingdom,"The Adelphi, 1-11 John Adam St, London WC2N 6AG, UK",#313331
+BBC News,,bbc.co.uk,bbc-news,BBCWorld,United Kingdom,"Television Centre, 101 Wood Ln, Shepherd's Bush, London W12, UK",#1F527B
+CNN,Cable News Network,cnn.com,cnn,CNN,United States,"190 Marietta St NW, Atlanta, GA 30303, USA",#004287
+The Washington Post,,washingtonpost.com,the-washington-post,washingtonpost,United States,"One Franklin Square, 1301 K St NW, Washington, DC 20071, USA",#0057EC
+Daily Mirror,,mirror.co.uk,mirror,DailyMirror,United Kingdom,"Canary Wharf, London E14 5AB, UK",#D62327
+The Hill,Newspaper,thehill.com,the-hill,thehill,United States,"Washington, DC, USA",#FF0021
+Metro,British newspaper,metro.co.uk,metro,MetroUK,United Kingdom,"2 Derry St, Kensington, London W8 5TT, UK",#FF9900
+Financial Times,,ft.com,financial-times,FT,United Kingdom,"1 Southwark Bridge, London SE1 9HL, UK",#9E2F50
+The Mercury News,,mercurynews.com,,mercnews,United States,"4 N 2nd St, San Jose, CA 95113, USA",#0084B4
+Daily Record,Scotland,dailyrecord.co.uk,,Daily_Record,United Kingdom,"Glasgow, UK",#162960
+Reuters,,reuters.com,reuters,Reuters,United Kingdom,"Canary Wharf, London E14, UK",#006F97
+Chicago Tribune,,chicagotribune.com,,chicagotribune,United States,"160 N Stetson Ave, Chicago, IL 60601, USA",#336699
+Daily Mail,,dailymail.co.uk,daily-mail,MailOnline,United Kingdom,"2 Derry St, Kensington, London W8 5TT, UK",#004EB3
+Politico,,politico.com,politico,politico,United States,"Arlington County, Arlington, VA, USA",#DD2E44
+Los Angeles Times,,latimes.com,,latimes,United States,"Los Angeles, CA, USA",#009999
+The Sun,Newspaper,thesun.co.uk,,TheSun,United Kingdom,"1 London Bridge St, London SE1 9GF, UK",#CC3333
+The New Yorker,,newyorker.com,,NewYorker,United States,"New York, NY, USA",#0084B4
+Fox News,,foxnews.com,fox-news,FoxNews,United States,"1211 Avenue of the Americas, New York, NY 10036, USA",#183A52
+The Guardian,,theguardian.com,the-guardian-uk,guardian,United Kingdom,"90 York Way, London N1 9AG, UK",#005789
+New York Post,,nypost.com,,nypost,United States,"1211 Avenue of the Americas, New York, NY 10036, USA",#CC3333
+Daily Star,United Kingdom,dailystar.co.uk,,Daily_Star,United Kingdom,"Lower Thames St, London EC3R 6DL, UK",#D20707
+London Evening Standard,,standard.co.uk,,EveningStandard,United Kingdom,"2 Derry St, Kensington, London W8 5TT, UK",#FF970D
+Chicago Sun-Times,,suntimes.com,,Suntimes,United States,"30 N Racine Ave #300, Chicago, IL 60607, USA",#3B94D9
+HuffPost,,huffpost.com,the-huffington-post,HuffPost,United States,"770 Broadway, New York, NY 10003, USA",#0DBE98
+New York Daily News,,nydailynews.com,,NYDailyNews,United States,"4 FDR Drive, New York, NY 10004, USA",#1C60AE
+The Wall Street Journal,,wsj.com,the-wall-street-journal,WSJ,United States,"1211 Avenue of the Americas, New York, NY 10036, USA",#1164B8

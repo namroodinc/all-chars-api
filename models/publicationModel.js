@@ -3,15 +3,22 @@ import mongoose from 'mongoose';
 const modelSchema = mongoose.Schema({
   dateCreated: Number,
   dateModified: Number,
-  avatar: String,
+  avatarUrlToImage: String,
+  backgroundColor: {
+    type: String,
+    default: '#000'
+  },
+  country: String,
   disambiguation: String,
   featured: {
     type: Boolean,
     default: false
   },
+  headquarters: String,
   name: String,
   newsApiId: String,
   shortenedUrl: String,
+  twitterScreenName: String,
   url: String
 });
 

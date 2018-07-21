@@ -97,6 +97,11 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 });
 
 // TODO: this needs implementing
+route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
+  console.log(req.params.articleId);
+});
+
+// TODO: this needs implementing
 route.post('/update/article/:articleId', bodyParserLimit, (req, res) => {
   console.log(req.params.articleId);
 });
