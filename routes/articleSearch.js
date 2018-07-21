@@ -41,13 +41,13 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
       // }
     })
     .sort({
-      'modified': -1
+      'datePublished': -1
     });
 
   pageQuery
     .populate('authors')
     .populate('publication')
-    .select('datePublished description title trends urlToImage')
+    .select('datePublished description title trends url')
     .skip((page || 0) * 12)
     .limit(12);
 
@@ -81,6 +81,7 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
             res.status(200);
           } else {
             res.status(200).send({
+              page,
               results
             });
           }

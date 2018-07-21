@@ -10,7 +10,7 @@ const authorSchema = Schema({
 const articleSchema = Schema({
   dateCreated: Number,
   dateModified: Number,
-  datePublished: String,
+  datePublished: Date,
   authors: [{
     type: Schema.Types.ObjectId,
     ref: 'Author'
