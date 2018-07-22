@@ -101,9 +101,30 @@ route.post('/create/publication', bodyParserLimit, (req, res) => {
   }
 });
 
-// TODO: this needs implementing
 route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) => {
-  console.log(req.params.publicationId);
+
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Publication
+        .findById(req.params.publicationId)
+        .exec((err, publication) => {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send(publication);
+          }
+        });
+    }
+  });
+
 });
 
 export default route;

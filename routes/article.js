@@ -22,7 +22,8 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
   const authors = req.body.authors.map(author => {
     return new Author({
       _id: new mongoose.Types.ObjectId(),
-      name: author
+      name: author,
+      publication: req.body.publication
     })
   });
 
@@ -41,25 +42,24 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     const authorSave = authors.map(author => {
       return new Promise((resolve, reject) => {
 
-        (async () => {
-          let existingAuthor = await Author.findOne({
-            name: author.name
-          });
+        const authorQuery = Author.findOne({
+          name: author.name
+        });
 
+        authorQuery.exec((err, person) => {
           console.log('------------');
-          console.log(existingAuthor);
 
-          if (existingAuthor !== null) {
-            console.log('not saving ', existingAuthor.name);
-            resolve(existingAuthor)
+          if (person !== null) {
+            console.log('not creating new: ', author.name);
+            resolve(author)
           } else {
-            console.log('saving ', author.name);
+            console.log('creating new: ', author.name);
             author.save((err) => {
               if (err) reject();
               resolve(author);
             });
           }
-        })();
+        });
 
       });
     });

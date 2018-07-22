@@ -9,7 +9,7 @@ import { parseString } from "xml2js";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'New York Times'
+    'searchTerm': 'The New European'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
