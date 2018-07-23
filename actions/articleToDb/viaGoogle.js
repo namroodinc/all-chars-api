@@ -1,4 +1,5 @@
 require('dotenv').config();
+import _ from "lodash";
 import metadata from "html-metadata";
 import parseDomain from "parse-domain";
 import request from "superagent";
@@ -9,7 +10,7 @@ import { parseString } from "xml2js";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'The New European'
+    'searchTerm': 'Politico'
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -56,7 +57,22 @@ request
 
               metadata(url)
                 .then((metadata) => {
-                  const { general, jsonLd, openGraph, schemaOrg, twitter } = metadata;
+                  const { general, jsonLd, openGraph, schemaOrg } = metadata;
+
+
+                  //
+                  // const j = {
+                  //   author: _.get(jsonLd, 'author.name')
+                  // }
+                  //
+                  // const s = {
+                  //   author: _.get(jsonLd, 'author.name')
+                  // }
+                  console.log(_.filter(_.map(schemaOrg.items, _.property('properties.author[0].properties.name')), undefined)[0]);
+                  console.log(_.filter(_.map(schemaOrg.items, _.property('properties.ratingValue[0]')), undefined));
+                  console.log(schemaOrg.items);
+                  //
+
 
                   const { author, keywords } = general;
                   const { tag } = openGraph;
@@ -83,7 +99,6 @@ request
                   let description = '';
                   if (general !== undefined) if (general.description !== undefined) description = general.description;
                   if (openGraph !== undefined) if (openGraph.description !== undefined) description = openGraph.description;
-                  if (twitter !== undefined) if (twitter.description !== undefined) description = twitter.description;
 
                   // title
                   let title = '';
@@ -114,23 +129,26 @@ request
 
           return Promise.all(articlesArray)
             .then((articles) => {
-              const articlesToPost = articles.map(article => {
-                return new Promise((resolve) => {
-                  request
-                    .post(`http://localhost:${process.env.PORT}/api/create/article`)
-                    .send(article)
-                    .set('X-CORS-TOKEN', process.env.APIKEY)
-                    .set('Content-Type', 'application/json')
-                    .end((err, res) => {
-                      resolve(res);
-                    });
-                })
-              });
 
-              return Promise.all(articlesToPost)
-                .then((articles) => {
-                  console.log(articles.length, ' articles added');
-                });
+              // console.log(articles);
+
+              // const articlesToPost = articles.map(article => {
+              //   return new Promise((resolve) => {
+              //     request
+              //       .post(`http://localhost:${process.env.PORT}/api/create/article`)
+              //       .send(article)
+              //       .set('X-CORS-TOKEN', process.env.APIKEY)
+              //       .set('Content-Type', 'application/json')
+              //       .end((err, res) => {
+              //         resolve(res);
+              //       });
+              //   })
+              // });
+              //
+              // return Promise.all(articlesToPost)
+              //   .then((articles) => {
+              //     console.log(articles.length, ' articles added');
+              //   });
             });
         });
 
