@@ -1,16 +1,20 @@
 require('dotenv').config();
-import _ from "lodash";
 import metadata from "html-metadata";
 import parseDomain from "parse-domain";
 import request from "superagent";
 import { parseString } from "xml2js";
+
+import dataFilter from "../../utils/dataFilter";
 
 // console.log(process.env.NEWS_SOURCE);
 
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    'searchTerm': 'Politico'
+    // 'searchTerm': 'Breitbart' // has weirdly nested jsonLd/authors and other metadata // TODO:
+    'searchTerm': 'Independent' // has jsonLd/author
+    // 'searchTerm': 'New York Post' // has jsonLd/authors
+    // 'searchTerm': 'Politico' // has schemaOrg/authors
     // 'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -49,6 +53,8 @@ request
         publications.map(publication => {
           const { publicationId, res } = publication;
 
+          console.log('------------------------')
+
           const articlesArray = res.map(article => {
             return new Promise((resolve) => {
               const { pubDate, link } = article;
@@ -57,71 +63,17 @@ request
 
               metadata(url)
                 .then((metadata) => {
-                  const { general, jsonLd, openGraph, schemaOrg } = metadata;
-
-
-                  //
-                  // const j = {
-                  //   author: _.get(jsonLd, 'author.name')
-                  // }
-                  //
-                  // const s = {
-                  //   author: _.get(jsonLd, 'author.name')
-                  // }
-                  console.log(_.filter(_.map(schemaOrg.items, _.property('properties.author[0].properties.name')), undefined)[0]);
-                  console.log(_.filter(_.map(schemaOrg.items, _.property('properties.ratingValue[0]')), undefined));
-                  console.log(schemaOrg.items);
-                  //
-
-
-                  const { author, keywords } = general;
-                  const { tag } = openGraph;
-
-                  let schemaOrgProps = {};
-                  if (schemaOrg !== undefined) {
-                    schemaOrg.items.map(item => {
-                      if (item.properties.author !== undefined) {
-                        schemaOrgProps.author = item.properties.author[0].properties.name;
-                      }
-                    });
-                  }
-
-                  // authors
-                  let authors = author === undefined ? [] : author.split(',');
-                  if (jsonLd !== undefined) if (jsonLd.author !== undefined) authors = jsonLd.author.name;
-                  if (schemaOrgProps.author !== undefined) authors = schemaOrgProps.author;
-
-                  // datePublished
-                  let datePublished = pubDate[0];
-                  if (openGraph !== undefined) if (openGraph['published_time'] !== undefined) datePublished = openGraph['published_time'];
-
-                  // description
-                  let description = '';
-                  if (general !== undefined) if (general.description !== undefined) description = general.description;
-                  if (openGraph !== undefined) if (openGraph.description !== undefined) description = openGraph.description;
-
-                  // title
-                  let title = '';
-                  if (general !== undefined) if (general.title !== undefined) title = general.title;
-                  if (openGraph !== undefined) if (openGraph.title !== undefined) title = openGraph.title;
-
-                  // trends
-                  const trendsList = keywords || tag || [];
-                  const trends = Array.isArray(trendsList) ? trendsList : trendsList.split(',');
-
-                  // urlToImage
-                  let urlToImage = '';
-                  if (openGraph !== undefined) if (openGraph.image !== undefined) urlToImage = openGraph.image.url;
+                  const { authors } = dataFilter(metadata);
 
                   resolve({
                     authors,
-                    datePublished,
-                    description,
+                    // datePublished,
+                    // description,
                     publication: publicationId,
-                    title,
-                    trends,
-                    url,
-                    urlToImage
+                    // title,
+                    // trends,
+                    url//,
+                    // urlToImage
                   });
                 });
             });
@@ -130,7 +82,7 @@ request
           return Promise.all(articlesArray)
             .then((articles) => {
 
-              // console.log(articles);
+              console.log(articles);
 
               // const articlesToPost = articles.map(article => {
               //   return new Promise((resolve) => {
