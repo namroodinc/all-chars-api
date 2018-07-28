@@ -12,10 +12,15 @@ request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
     // 'searchTerm': 'Breitbart' // has weirdly nested jsonLd/authors and other metadata // TODO:
-    'searchTerm': 'Independent' // has jsonLd/author
+    'searchTerm': 'Independent', // has jsonLd/author as array
     // 'searchTerm': 'New York Post' // has jsonLd/authors
-    // 'searchTerm': 'Politico' // has schemaOrg/authors
-    // 'newsApiIdOrNot': true
+    // 'searchTerm': 'times' // has jsonLd/authors
+    // 'searchTerm': 'Politico' // has schemaOrg/Authors
+    // 'searchTerm': 'BBC', // has jsonLd/Authors
+    // 'searchTerm': 'CNN', // has jsonLd/Authors
+    // 'searchTerm': 'Washington Post', // has jsonLd/Authors
+    // 'searchTerm': 'Australian' // TODO: DOESN'T WORK
+    'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
   .set('Content-Type', 'application/json')
@@ -53,8 +58,6 @@ request
         publications.map(publication => {
           const { publicationId, res } = publication;
 
-          console.log('------------------------')
-
           const articlesArray = res.map(article => {
             return new Promise((resolve) => {
               const { pubDate, link } = article;
@@ -81,7 +84,6 @@ request
 
           return Promise.all(articlesArray)
             .then((articles) => {
-
               console.log(articles);
 
               // const articlesToPost = articles.map(article => {

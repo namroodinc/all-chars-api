@@ -3,11 +3,25 @@ import { filter, get, has, map, property } from "lodash";
 export default function(metadata) {
   const { general, jsonLd, openGraph, schemaOrg } = metadata;
 
+  // Authors
   let authors = [];
-  // let authors = filter(map(jsonLd, property('author.name')), undefined);
-  if (has(jsonLd, 'author.name')) authors = get(jsonLd, 'author.name');
-  if (has(jsonLd, 'author')) authors = get(jsonLd, 'author');
-  if (has(schemaOrg, 'items')) authors = filter(map(schemaOrg.items, property('properties.author[0].properties.name')), undefined)[0];
+  if (has(general, 'author')) {
+    authors = get(general, 'author').split(/,| and | by | By /g).map(author => author.trim());
+  } else {
+    if (has(schemaOrg, 'items')) {
+      authors = filter(map(schemaOrg.items, property('properties.author[0].properties.name')), undefined)[0] || [];
+    } else {
+      if (Array.isArray(jsonLd)) {
+        authors = filter(map(jsonLd, property('author.name')), undefined)[0];
+      } else {
+        if (has(jsonLd, 'author.name')) {
+          authors.push(get(jsonLd, 'author.name'));
+        } else if (has(jsonLd, 'author')) {
+          authors.push(get(jsonLd, 'author'));
+        }
+      }
+    }
+  }
 
   return {
     authors
@@ -15,12 +29,6 @@ export default function(metadata) {
 }
 
 
-// console.log(_.filter(_.map(schemaOrg.items, _.property('properties.author[0].properties.name')), undefined)[0]);
-// console.log(_.filter(_.map(schemaOrg.items, _.property('properties.ratingValue[0]')), undefined)[0]);
-// console.log(schemaOrg.items);
-// //
-//
-//
 // const { author, keywords } = general;
 // const { tag } = openGraph;
 //
