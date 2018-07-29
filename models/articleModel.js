@@ -19,10 +19,15 @@ const articleSchema = Schema({
     ref: 'Author'
   }],
   description: String,
+  locale: {
+    type: String,
+    default: 'en_GB'
+  },
   publication: {
     type: Schema.Types.ObjectId,
     ref: 'Publication'
   },
+  section: String,
   shortUrl: String,
   title: String,
   trends: [],
