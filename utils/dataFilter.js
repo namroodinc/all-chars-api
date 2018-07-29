@@ -31,7 +31,7 @@ export default function(metadata) {
     'openGraph': () => {
       switch (has(openGraph, 'published_time')) {
         case false:
-          switch (has(openGraph, 'published_time')) {
+          switch (has(openGraph, 'pubdate')) {
             case false:
               return null;
             default:

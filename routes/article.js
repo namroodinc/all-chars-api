@@ -98,7 +98,31 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
 // TODO: this needs implementing
 route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
-  console.log(req.params.articleId);
+
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Article
+        .findById(req.params.articleId)
+        .populate('authors')
+        .populate('publication')
+        .exec((err, article) => {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send(article);
+          }
+        });
+    }
+  });
+
 });
 
 // TODO: this needs implementing
