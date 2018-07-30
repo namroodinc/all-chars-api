@@ -96,7 +96,6 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
 });
 
-// TODO: this needs implementing
 route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
