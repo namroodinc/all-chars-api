@@ -39,6 +39,9 @@ const articleSchema = Schema({
 const Author = mongoose.model('Author', authorSchema);
 const Article = mongoose.model('Article', articleSchema);
 
+// modelSchema.pre('find', function(next) {
+// });
+
 export default {
   Author,
   Article

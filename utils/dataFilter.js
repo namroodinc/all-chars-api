@@ -136,13 +136,13 @@ export default function(metadata) {
   }
 
   return {
-    authors: authors.general(),
+    authors: authors.general() || [],
     datePublished: datePublished.openGraph(),
     description: description.general(),
     locale: locale.openGraph(),
     section: section.openGraph(),
     title: title.general(),
-    trends: trends.general() || trends.openGraph(),
+    trends: trends.general() || trends.openGraph() || [],
     urlToImage: urlToImage.openGraph()
   }
 }

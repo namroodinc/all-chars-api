@@ -3,7 +3,7 @@ import Papa from "papaparse";
 import read from "read-file";
 import request from "superagent";
 
-read("./temp_files/publications.csv", (err, buffer) => {
+read("./temp_files/newPublications.csv", (err, buffer) => {
   Papa.parse(buffer.toString('utf8'), {
     header: true,
     complete: function(results) {
