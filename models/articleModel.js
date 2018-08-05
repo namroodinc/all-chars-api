@@ -39,8 +39,35 @@ const articleSchema = Schema({
 const Author = mongoose.model('Author', authorSchema);
 const Article = mongoose.model('Article', articleSchema);
 
-// modelSchema.pre('find', function(next) {
-// });
+authorSchema.pre('save', function(next) {
+  Author
+    .findOne({
+      name: this.name
+    }, function (err, author) {
+      if (author === null) {
+        next();
+      } else {
+        next(
+          new Error('Author exists')
+        );
+      }
+    });
+});
+
+articleSchema.pre('save', function(next) {
+  Article
+    .findOne({
+      url: this.url
+    }, function (err, author) {
+      if (author === null) {
+        next();
+      } else {
+        next(
+          new Error('Article exists')
+        );
+      }
+    });
+});
 
 export default {
   Author,

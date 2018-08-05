@@ -38,41 +38,29 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
   });
 
   function saveArticle() {
-
     const authorSave = authors.map(author => {
       return new Promise((resolve, reject) => {
-
-        const authorQuery = Author.findOne({
-          name: author.name
+        author.save((err) => {
+          if (err) reject();
+          resolve(author);
         });
-
-        authorQuery.exec((err, person) => {
-          console.log('------------');
-
-          if (person !== null) {
-            console.log('not creating new: ', author.name);
-            resolve(author)
-          } else {
-            console.log('creating new: ', author.name);
-            author.save((err) => {
-              if (err) reject();
-              resolve(author);
-            });
-          }
-        });
-
+      }).catch(() => {
+        console.log(`${author.name} exists`);
       });
     });
 
     return Promise.all(authorSave)
-      .then(data => {
+      .then(authors => {
+
         const article = new Article(
           Object
             .assign(
               creationDetails,
               req.body,
               {
-                authors: data.map(data => data._id)
+                authors: authors
+                  .filter(author => author !== undefined)
+                  .map(author => author._id)
               }
             )
         );

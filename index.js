@@ -9,6 +9,7 @@ import example from './routes/example';
 import publication from './routes/publication';
 import publicationSearch from './routes/publicationSearch';
 import review from './routes/review';
+import trend from './routes/trend';
 
 const corsConfig = {
   methods: ['GET'],
@@ -30,6 +31,7 @@ app.use('/api', cors(corsConfig), example);
 app.use('/api', cors(corsConfig), publication);
 app.use('/api', cors(corsConfig), publicationSearch);
 app.use('/api', cors(corsConfig), review);
+app.use('/api', cors(corsConfig), trend);
 
 app.listen(process.env.PORT, () => {
   console.log(
