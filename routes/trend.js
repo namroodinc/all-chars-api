@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import moment from 'moment';
 
+import dataCount from "../utils/dataCount";
+
 const bodyParserLimit = bodyParser.json({
   limit: '50mb'
 });
@@ -43,15 +45,11 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
               .status(500)
               .send(err.message);
           } else {
-            const trends = articles.map(article => {
-              return article.trends;
-            });
-
             res
               .status(200)
               .send({
                 articlesCount: articles.length,
-                articles: trends
+                trends: dataCount(articles, 'trends')
               });
           }
         });

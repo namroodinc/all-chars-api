@@ -1,10 +1,12 @@
-import { get, has } from "lodash"; // filter, map, property
+import { filter, get, has, map, property } from "lodash";
 
 export default function(metadata) {
   const {
     general,
-    openGraph
-  } = metadata; // jsonLd, schemaOrg
+    jsonLd,
+    openGraph,
+    schemaOrg
+  } = metadata;
 
   // Authors
   const authorsFilter = (data) => {
@@ -23,7 +25,26 @@ export default function(metadata) {
           const isGeneralAuthorArray = Array.isArray(getGeneralAuthor);
           return isGeneralAuthorArray ? getGeneralAuthor : authorsFilter(getGeneralAuthor)
       }
+    },
+    'jsonLd': () => {
+      switch (has(jsonLd, 'author.name')) {
+        case false:
+          return null;
+        default:
+          const getJsonLdAuthor = get(jsonLd, 'author.name');
+          const isGeneralAuthorArray = Array.isArray(getJsonLdAuthor);
+          return isGeneralAuthorArray ? getJsonLdAuthor : authorsFilter(getJsonLdAuthor)
+      }
+    },
+    'schemaOrg': () => {
+      switch (has(schemaOrg, 'items')) {
+        case false:
+          return null;
+        default:
+          return filter(map(schemaOrg.items, property('properties.author[0].properties.name')), undefined)[0]
+      }
     }
+    // TODO: Add openGraph
   }
 
   // Date Published
@@ -53,7 +74,9 @@ export default function(metadata) {
           return get(general, 'description');
       }
     }
+    // TODO: Add jsonLd
     // TODO: Add openGraph
+    // TODO: Add schemaOrg
   }
 
   // Locale
@@ -80,6 +103,18 @@ export default function(metadata) {
     }
   }
 
+  // Short URL
+  let shortUrl = {
+    'general': () => {
+      switch (has(general, 'shortlink')) {
+        case false:
+          return null;
+        default:
+          return get(general, 'shortlink');
+      }
+    }
+  }
+
   // Title
   let title = {
     'general': () => {
@@ -97,7 +132,8 @@ export default function(metadata) {
   const trendsFilter = (data) => {
     return data
       .split(/,/g)
-      .map(author => author.trim());
+      .map(trend => trend.trim())
+      .filter(trend => trend !== '');
   }
   let trends = {
     'general': () => {
@@ -136,11 +172,12 @@ export default function(metadata) {
   }
 
   return {
-    authors: authors.general() || [],
+    authors: authors.general() || authors.jsonLd() || authors.schemaOrg() || [],
     datePublished: datePublished.openGraph(),
     description: description.general(),
     locale: locale.openGraph(),
     section: section.openGraph(),
+    shortUrl: shortUrl.general(),
     title: title.general(),
     trends: trends.general() || trends.openGraph() || [],
     urlToImage: urlToImage.openGraph()

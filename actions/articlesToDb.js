@@ -7,7 +7,7 @@ import dataFilter from "../utils/dataFilter";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    // 'searchTerm': 'cnn',
+    // 'searchTerm': 'Metro',
     'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
@@ -45,6 +45,7 @@ request
                     description,
                     locale,
                     section,
+                    shortUrl,
                     title,
                     trends,
                     urlToImage
@@ -57,6 +58,7 @@ request
                     locale,
                     publication: publicationId,
                     section,
+                    shortUrl,
                     title,
                     trends,
                     url,
