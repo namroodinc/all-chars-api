@@ -7,7 +7,7 @@ import dataFilter from "../utils/dataFilter";
 request
   .post(`http://localhost:${process.env.PORT}/api/search/publications`)
   .send({
-    // 'searchTerm': 'Metro',
+    // 'searchTerm': 'telegraph',
     'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)

@@ -23,6 +23,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     return new Author({
       _id: new mongoose.Types.ObjectId(),
       name: author,
+      prettyName: author,
       publication: req.body.publication
     })
   });

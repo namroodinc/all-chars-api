@@ -13,7 +13,7 @@ const { Story, Person } = exampleModel;
 import options from '../constants/options';
 
 route.post('/create/example', bodyParserLimit, (req, res) => {
-  const authors = req.body.authors.map((author, i) => {
+  const authors = req.body.authors.map((author) => {
     return new Person({
       _id: new mongoose.Types.ObjectId(),
       name: author,

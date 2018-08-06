@@ -9,10 +9,13 @@ export default function(metadata) {
   } = metadata;
 
   // Authors
+  const authorsReplaceTrim = (author) => {
+    return author.replace(/\r?\n|,|\r/g, '').trim();
+  };
   const authorsFilter = (data) => {
     return data
       .split(/,| and | \| | by | By /g)
-      .map(author => author.trim())
+      .map(author => authorsReplaceTrim(author))
       .filter(author => !(author.toLowerCase().search(/correspondent|editor/g) > -1));
   }
   let authors = {
@@ -41,7 +44,21 @@ export default function(metadata) {
         case false:
           return null;
         default:
-          return filter(map(schemaOrg.items, property('properties.author[0].properties.name')), undefined)[0]
+          const schemaOrgAuthor = filter(
+            map(
+              schemaOrg.items,
+              property('properties.author[0].properties.name')
+            ),
+            undefined
+          )[0];
+          switch (schemaOrgAuthor) {
+            case undefined:
+              return null;
+            default:
+              return schemaOrgAuthor
+                .map(author => authorsReplaceTrim(author))
+                .filter(author => !(author.toLowerCase().search(/correspondent|editor/g) > -1));
+          }
       }
     }
     // TODO: Add openGraph
@@ -172,7 +189,7 @@ export default function(metadata) {
   }
 
   return {
-    authors: authors.general() || authors.jsonLd() || authors.schemaOrg() || [],
+    authors: authors.schemaOrg() || authors.general() || authors.jsonLd() || [],
     datePublished: datePublished.openGraph(),
     description: description.general(),
     locale: locale.openGraph(),

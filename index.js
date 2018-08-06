@@ -5,7 +5,7 @@ const app = express();
 
 import article from './routes/article';
 import articleSearch from './routes/articleSearch';
-import example from './routes/example';
+import author from './routes/author';
 import publication from './routes/publication';
 import publicationSearch from './routes/publicationSearch';
 import review from './routes/review';
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 app.use('/api', cors(corsConfig), article);
 app.use('/api', cors(corsConfig), articleSearch);
-app.use('/api', cors(corsConfig), example);
+app.use('/api', cors(corsConfig), author);
 app.use('/api', cors(corsConfig), publication);
 app.use('/api', cors(corsConfig), publicationSearch);
 app.use('/api', cors(corsConfig), review);
