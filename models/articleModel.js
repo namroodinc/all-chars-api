@@ -2,24 +2,30 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const authorSchema = Schema({
-  _id: Schema.Types.ObjectId,
+  bio: String,
+  instagram: String,
   name: String,
   prettyName: String,
   publication: {
     type: Schema.Types.ObjectId,
     ref: 'Publication'
-  }
+  },
+  twitter: String
 });
 
 const articleSchema = Schema({
-  dateCreated: Number,
-  dateModified: Number,
-  datePublished: Date,
   authors: [{
     type: Schema.Types.ObjectId,
     ref: 'Author'
   }],
+  dateCreated: Number,
+  dateModified: Number,
+  datePublished: Date,
   description: String,
+  disableReviews: {
+    type: Boolean,
+    default: false
+  },
   locale: {
     type: String,
     default: 'en_GB'

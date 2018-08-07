@@ -9,6 +9,7 @@ const modelSchema = mongoose.Schema({
     default: '#000'
   },
   country: String,
+  description: String,
   disambiguation: String,
   featured: {
     type: Boolean,
