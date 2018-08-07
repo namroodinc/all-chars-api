@@ -7,25 +7,60 @@ const bodyParserLimit = bodyParser.json({
 });
 const route = express.Router();
 
-import articleModel from '../models/articleModel';
-const { Author } = articleModel;
+import ideologyModel from '../models/ideologyModel';
+const { Ideology } = ideologyModel;
 
 import options from '../constants/options';
 
-route.post('/delete/author/:authorId', bodyParserLimit, (req, res) => {
+route.post('/create/ideology', bodyParserLimit, (req, res) => {
+
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      deleteAuthor(req.params.authorId);
+      saveIdeology();
     }
   });
 
-  function deleteAuthor(authorId) {
-    Author
-      .findByIdAndRemove(authorId, req.body, function (err) {
+  function saveIdeology() {
+    const review = new Ideology({
+      description: req.body.description,
+      name: req.body.name
+    });
+
+    review.save((err, mongoResponse) => {
+      if (err) {
+        res
+          .status(500)
+          .send(err.message);
+      } else {
+        res
+          .status(200)
+          .send({
+            id: mongoResponse._id.toString(),
+            message: "Ideology has been created"
+          });
+      }
+    });
+  }
+});
+
+route.post('/delete/ideology/:ideologyId', bodyParserLimit, (req, res) => {
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      deleteIdeology(req.params.ideologyId);
+    }
+  });
+
+  function deleteIdeology(ideologyId) {
+    Ideology
+      .findByIdAndRemove(ideologyId, req.body, function (err) {
         if (err) {
           res
             .status(500)
@@ -34,25 +69,24 @@ route.post('/delete/author/:authorId', bodyParserLimit, (req, res) => {
           res
             .status(200)
             .send({
-              authorId,
-              message: "Author has been deleted"
+              ideologyId,
+              message: "Ideology has been deleted"
             });
         }
       });
   }
 });
 
-route.post('/retrieve/author/:authorId', bodyParserLimit, (req, res) => {
+route.post('/retrieve/ideology/:ideologyId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      Author
-        .findById(req.params.authorId)
-        .populate('publication')
-        .exec((err, author) => {
+      Ideology
+        .findById(req.params.ideologyId)
+        .exec((err, ideology) => {
           if (err) {
             res
               .status(500)
@@ -60,21 +94,21 @@ route.post('/retrieve/author/:authorId', bodyParserLimit, (req, res) => {
           } else {
             res
               .status(200)
-              .send(author);
+              .send(ideology);
           }
         });
     }
   });
 });
 
-route.post('/search/authors', bodyParserLimit, (req, res) => {
+route.post('/search/ideologies', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      Author
+      Ideology
         .find({
           $or: [
             {
@@ -84,8 +118,7 @@ route.post('/search/authors', bodyParserLimit, (req, res) => {
             }
           ]
         })
-        .populate('publication')
-        .exec(function (err, author) {
+        .exec(function (err, ideology) {
           if (err) {
             res
               .status(500)
@@ -93,25 +126,25 @@ route.post('/search/authors', bodyParserLimit, (req, res) => {
           } else {
             res
               .status(200)
-              .send(author);
+              .send(ideology);
           }
         });
     }
   });
 });
 
-route.post('/update/author/:authorId', bodyParserLimit, (req, res) => {
+route.post('/update/ideology/:ideologyId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      updateAuthor(req.params.authorId);
+      updateIdeology(req.params.ideologyId);
     }
   });
 
-  function updateAuthor(authorId) {
+  function updateIdeology(ideologyId) {
     const updatedData = (
       Object
         .assign(
@@ -120,8 +153,8 @@ route.post('/update/author/:authorId', bodyParserLimit, (req, res) => {
         )
     );
 
-    Author
-      .findByIdAndUpdate(authorId, updatedData, function (err) {
+    Ideology
+      .findByIdAndUpdate(ideologyId, updatedData, function (err) {
         if (err) {
           res
             .status(500)
@@ -130,8 +163,8 @@ route.post('/update/author/:authorId', bodyParserLimit, (req, res) => {
           res
             .status(200)
             .send({
-              authorId,
-              message: "Author has been updated"
+              ideologyId,
+              message: "Ideology has been updated"
             });
         }
       });

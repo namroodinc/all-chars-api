@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
 const modelSchema = mongoose.Schema({
   dateCreated: Number,
@@ -16,6 +17,10 @@ const modelSchema = mongoose.Schema({
     default: false
   },
   headquarters: String,
+  ideology: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Ideology'
+  }],
   name: String,
   newsApiId: String,
   shortenedUrl: String,

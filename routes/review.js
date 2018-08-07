@@ -24,14 +24,14 @@ route.post('/create/review', bodyParserLimit, (req, res) => {
   });
 
   function saveReview() {
-    const story = new Review({
+    const review = new Review({
       dateCreated: Date.now(),
       dateModified: Date.now(),
       article: req.body.articleId,
       message: req.body.message
     });
 
-    story.save((err, mongoResponse) => {
+    review.save((err, mongoResponse) => {
       if (err) {
         res
           .status(500)

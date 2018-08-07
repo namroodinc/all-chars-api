@@ -111,6 +111,10 @@ route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) =
     } else {
       Publication
         .findById(req.params.publicationId)
+        .populate({
+          path: 'ideology',
+          select: 'description name'
+        })
         .exec((err, publication) => {
           if (err) {
             res
