@@ -4,8 +4,7 @@
   "description": "pt-newsrater is the API for \"PT\".",
   "main": "index.js",
   "scripts": {
-    "action:add:articles:uk": "cross-env COUNTRY=uk babel-node actions/articlesToDb.js",
-    "action:add:articles:us": "cross-env COUNTRY=us babel-node actions/articlesToDb.js",
+    "action:add:articles": "babel-node actions/articlesToDb.js",
     "action:add:publications": "babel-node actions/publicationsToDb.js",
     "start": "babel-node index.js",
     "lint": "eslint -c .eslintrc src",
