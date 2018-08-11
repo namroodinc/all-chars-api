@@ -9,7 +9,7 @@ import dataFilter from "../../utils/dataFilter";
 // console.log(process.env.NEWS_SOURCE);
 
 request
-  .post(`http://localhost:${process.env.PORT}/api/search/publications`)
+  .post(`${process.env.API_BASE_URL}/api/search/publications`)
   .send({
     // 'searchTerm': 'Breitbart' // has weirdly nested jsonLd/authors and other metadata // TODO:
     // 'searchTerm': 'Independent', // has jsonLd/author as array
@@ -98,7 +98,7 @@ request
               const articlesToPost = articles.map(article => {
                 return new Promise((resolve) => {
                   request
-                    .post(`http://localhost:${process.env.PORT}/api/create/article`)
+                    .post(`${process.env.API_BASE_URL}/api/create/article`)
                     .send(article)
                     .set('X-CORS-TOKEN', process.env.APIKEY)
                     .set('Content-Type', 'application/json')

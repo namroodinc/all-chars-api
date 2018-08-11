@@ -4,9 +4,22 @@ import request from "superagent";
 
 import dataFilter from "../utils/dataFilter";
 
+let country = 'United Kingdom';
+switch (process.env.COUNTRY) {
+  case 'au':
+    country = 'Australia';
+    break;
+  case 'us':
+    country = 'United States';
+    break;
+  default:
+    country = 'United Kingdom';
+}
+
 request
-  .post(`http://localhost:${process.env.PORT}/api/search/publications`)
+  .post(`${process.env.API_BASE_URL}/api/search/publications`)
   .send({
+    country,
     // 'searchTerm': 'telegraph',
     'newsApiIdOrNot': true
   })
@@ -15,9 +28,14 @@ request
   .end((err, res) => {
     const publicationArray = res.body.results.map(publication => {
       return new Promise((resolve) => {
-        console.log(`https://newsapi.org/v2/top-headlines?sources=${publication.newsApiId}&apiKey=${process.env.NEWS_APIKEY}`);
+        const newsApiCall = `https://newsapi.org/v2/top-headlines?sources=${publication.newsApiId}&apiKey=${process.env.NEWS_APIKEY}`;
+
+        console.log(publication.name);
+        console.log(newsApiCall);
+        console.log('* * * * *');
+
         request
-          .get(`https://newsapi.org/v2/top-headlines?sources=${publication.newsApiId}&apiKey=${process.env.NEWS_APIKEY}`)
+          .get(newsApiCall)
           .end((err, res) => {
             resolve({
               publicationId: publication['_id'],
@@ -73,7 +91,7 @@ request
               const articlesToPost = articles.map(article => {
                 return new Promise((resolve) => {
                   request
-                    .post(`http://localhost:${process.env.PORT}/api/create/article`)
+                    .post(`${process.env.API_BASE_URL}/api/create/article`)
                     .send(article)
                     .set('X-CORS-TOKEN', process.env.APIKEY)
                     .set('Content-Type', 'application/json')

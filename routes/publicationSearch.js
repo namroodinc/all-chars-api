@@ -13,6 +13,7 @@ import options from '../constants/options';
 const Publication = publicationModel.Publication;
 
 route.post('/search/publications', bodyParserLimit, (req, res) => {
+  const countrySearchTerm = req.body.country || '';
   const searchTerm = req.body.searchTerm;
   const newsApiIdOrNot = req.body.newsApiIdOrNot || false;
 
@@ -23,6 +24,9 @@ route.post('/search/publications', bodyParserLimit, (req, res) => {
   const pageQuery = Publication.find({
     $or: [
       {
+        'country': {
+          '$regex': new RegExp(countrySearchTerm, 'i')
+        },
         'name': {
           '$regex': new RegExp(searchTerm, 'i')
         },

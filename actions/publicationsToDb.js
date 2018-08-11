@@ -12,7 +12,7 @@ read("./temp_files/newPublications.csv", (err, buffer) => {
       const dataArray = data.map(publication => {
         return new Promise((resolve) => {
           request
-            .post(`http://localhost:${process.env.PORT}/api/create/publication`)
+            .post(`${process.env.API_BASE_URL}/api/create/publication`)
             .send(publication)
             .set('X-CORS-TOKEN', process.env.APIKEY)
             .set('Content-Type', 'application/json')
