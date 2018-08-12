@@ -110,6 +110,14 @@ export default function(metadata) {
 
   // Section
   let section = {
+    'general': () => {
+      switch (has(general, 'section')) {
+        case false:
+          return null;
+        default:
+          return get(general, 'section');
+      }
+    },
     'openGraph': () => {
       switch (has(openGraph, 'section')) {
         case false:
@@ -193,7 +201,7 @@ export default function(metadata) {
     datePublished: datePublished.openGraph(),
     description: description.general(),
     locale: locale.openGraph(),
-    section: section.openGraph(),
+    section: section.general() || section.openGraph(),
     shortUrl: shortUrl.general(),
     title: title.general(),
     trends: trends.general() || trends.openGraph() || [],
