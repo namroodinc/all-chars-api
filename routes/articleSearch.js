@@ -15,6 +15,7 @@ import options from '../constants/options';
 route.post('/search/articles', bodyParserLimit, (req, res) => {
   const searchTerm = req.body.searchTerm;
   const page = req.body.page;
+  const publication = req.body.publication;
   // const author = req.body.author;
   // const trend = req.body.trend;
 
@@ -22,15 +23,19 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
     _id: searchTerm
   });
 
-  const pageQuery = Article.find({
-    $or: [
-      {
-        'title': {
-          '$regex': new RegExp(searchTerm, 'i')
+  const pageQuery = Article
+    .find({
+      $or: [
+        {
+          'title': {
+            '$regex': new RegExp(searchTerm, 'i')
+          }
         }
-      }
-    ]
-  })
+      ]
+    })
+    .find(publication !== undefined ? {
+      'publication': mongoose.Types.ObjectId(publication)
+    } : {})
     .find({
       // 'date': { $gte: req.body.minDate, $lte: req.body.maxDate },
       // 'authors': {

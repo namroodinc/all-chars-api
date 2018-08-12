@@ -7,10 +7,13 @@ const bodyParserLimit = bodyParser.json({
 });
 const route = express.Router();
 
+import articleModel from '../models/articleModel';
 import publicationModel from '../models/publicationModel';
+
 import options from '../constants/options';
 
-const Publication = publicationModel.Publication;
+const { Article } = articleModel;
+const { Publication } = publicationModel;
 
 route.post('/create/publication', bodyParserLimit, (req, res) => {
 
@@ -121,9 +124,30 @@ route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) =
               .status(500)
               .send(err.message);
           } else {
-            res
-              .status(200)
-              .send(publication);
+            Article
+              .find({
+                'publication': mongoose.Types.ObjectId(req.params.publicationId)
+              })
+              .sort({
+                'datePublished': -1
+              })
+              .populate('authors')
+              .populate({
+                path: 'publication',
+                select: 'backgroundColor name id'
+              })
+              .select('datePublished description section title trends url')
+              .limit(24)
+              .exec(function(err, results) {
+                if (!results) {
+                  res.status(200);
+                } else {
+                  res.status(200).send({
+                    publication,
+                    results
+                  });
+                }
+              });
           }
         });
     }
