@@ -11,9 +11,10 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
+
 import options from '../constants/options';
 
-const Article = articleModel.Article;
+const { Article, Trend } = articleModel;
 
 route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
   const publicationId = req.body.publicationId;
@@ -55,6 +56,54 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
         });
     }
   });
+});
+
+route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
+
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Trend
+        .findById(req.params.trendId)
+        .exec((err, trend) => {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            Article
+              .find({
+                'trends': mongoose.Types.ObjectId(req.params.trendId)
+              })
+              .sort({
+                'datePublished': -1
+              })
+              .populate('authors')
+              .populate({
+                path: 'publication',
+                select: 'backgroundColor name id'
+              })
+              .populate('trends')
+              .select('datePublished description section title url')
+              .limit(24)
+              .exec(function(err, results) {
+                if (!results) {
+                  res.status(200);
+                } else {
+                  res.status(200).send({
+                    trend,
+                    results
+                  });
+                }
+              });
+          }
+        });
+    }
+  });
+
 });
 
 export default route;

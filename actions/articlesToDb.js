@@ -20,7 +20,7 @@ request
   .post(`${process.env.API_BASE_URL}/api/search/publications`)
   .send({
     country,
-    // 'searchTerm': 'telegraph',
+    'searchTerm': 'telegraph',
     'newsApiIdOrNot': true
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)

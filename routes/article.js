@@ -54,7 +54,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
           resolve(author);
         });
       }).catch(() => {
-        console.log(`${author.name} exists`);
+        console.log(`${author.name} exists!`);
       });
     });
 
@@ -67,7 +67,7 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
               resolve(trend);
             });
           }).catch(() => {
-            console.log(`${trend.name} exists`);
+            console.log(`${trend} exists!`);
           });
         });
 

@@ -90,8 +90,8 @@ trendSchema.pre('save', function(next) {
   Trend
     .findOne({
       name: this.name
-    }, function (err, author) {
-      if (author === null) {
+    }, function (err, trend) {
+      if (trend === null) {
         next();
       } else {
         next(
