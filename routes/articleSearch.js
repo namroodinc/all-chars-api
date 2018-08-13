@@ -52,7 +52,8 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
   pageQuery
     .populate('authors')
     .populate('publication')
-    .select('datePublished description section title trends url')
+    .populate('trends')
+    .select('datePublished description section title url')
     .skip((page || 0) * 12)
     .limit(12);
 

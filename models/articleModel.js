@@ -37,14 +37,24 @@ const articleSchema = Schema({
   section: String,
   shortUrl: String,
   title: String,
-  trends: [],
+  trends: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Trend'
+  }],
   url: String,
   urlToImage: String,
   type: String
 });
 
+const trendSchema = Schema({
+  description: String,
+  name: String,
+  prettyName: String
+});
+
 const Author = mongoose.model('Author', authorSchema);
 const Article = mongoose.model('Article', articleSchema);
+const Trend = mongoose.model('Trend', trendSchema);
 
 authorSchema.pre('save', function(next) {
   Author
@@ -65,8 +75,8 @@ articleSchema.pre('save', function(next) {
   Article
     .findOne({
       url: this.url
-    }, function (err, author) {
-      if (author === null) {
+    }, function (err, article) {
+      if (article === null) {
         next();
       } else {
         next(
@@ -76,7 +86,23 @@ articleSchema.pre('save', function(next) {
     });
 });
 
+trendSchema.pre('save', function(next) {
+  Trend
+    .findOne({
+      name: this.name
+    }, function (err, author) {
+      if (author === null) {
+        next();
+      } else {
+        next(
+          new Error('Trend exists')
+        );
+      }
+    });
+});
+
 export default {
   Author,
-  Article
+  Article,
+  Trend
 };

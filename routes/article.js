@@ -8,7 +8,7 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
-const { Author, Article } = articleModel;
+const { Author, Article, Trend } = articleModel;
 
 import options from '../constants/options';
 
@@ -25,6 +25,14 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
       name: author,
       prettyName: author,
       publication: req.body.publication
+    })
+  });
+
+  const trends = req.body.trends.map(trend => {
+    return new Trend({
+      _id: new mongoose.Types.ObjectId(),
+      name: trend,
+      prettyName: trend
     })
   });
 
@@ -52,34 +60,53 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
     return Promise.all(authorSave)
       .then(authors => {
-
-        const article = new Article(
-          Object
-            .assign(
-              creationDetails,
-              req.body,
-              {
-                authors: authors
-                  .filter(author => author !== undefined)
-                  .map(author => author._id)
-              }
-            )
-        );
-
-        article.save((err, mongoResponse) => {
-          if (err) {
-            res
-              .status(500)
-              .send(err.message);
-          } else {
-            res
-              .status(200)
-              .send({
-                id: mongoResponse._id.toString(),
-                message: "Article has been created"
-              });
-          }
+        const trendSave = trends.map(trend => {
+          return new Promise((resolve, reject) => {
+            trend.save((err) => {
+              if (err) reject();
+              resolve(trend);
+            });
+          }).catch(() => {
+            console.log(`${trend.name} exists`);
+          });
         });
+
+        return Promise.all(trendSave)
+          .then(trends => {
+
+            const article = new Article(
+              Object
+                .assign(
+                  creationDetails,
+                  req.body,
+                  {
+                    authors: authors
+                      .filter(author => author !== undefined)
+                      .map(author => author._id)
+                  },
+                  {
+                    trends: trends
+                      .filter(trend => trend !== undefined)
+                      .map(trend => trend._id)
+                  }
+                )
+            );
+
+            article.save((err, mongoResponse) => {
+              if (err) {
+                res
+                  .status(500)
+                  .send(err.message);
+              } else {
+                res
+                  .status(200)
+                  .send({
+                    id: mongoResponse._id.toString(),
+                    message: "Article has been created"
+                  });
+              }
+            });
+          });
       });
   }
 
@@ -97,6 +124,7 @@ route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
         .findById(req.params.articleId)
         .populate('authors')
         .populate('publication')
+        .populate('trends')
         .exec((err, article) => {
           if (err) {
             res
