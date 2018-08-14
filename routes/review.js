@@ -112,6 +112,40 @@ route.post('/retrieve/review/:reviewId', bodyParserLimit, (req, res) => {
   });
 });
 
+route.post('/search/reviews', bodyParserLimit, (req, res) => {
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Review
+        .find({
+          $or: [
+            {
+              'message': {
+                '$regex': new RegExp(req.body.searchTerm, 'i')
+              }
+            }
+          ]
+        })
+        .select('dateCreated dateModified message')
+        .exec(function (err, review) {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send(review);
+          }
+        });
+    }
+  });
+
+});
+
 route.post('/update/review/:reviewId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
@@ -145,40 +179,6 @@ route.post('/update/review/:reviewId', bodyParserLimit, (req, res) => {
         }
       });
   }
-});
-
-route.post('/search/reviews', bodyParserLimit, (req, res) => {
-  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
-    if (error) {
-      res
-        .status(500)
-        .send(error.message)
-    } else {
-      Review
-        .find({
-          $or: [
-            {
-              'message': {
-                '$regex': new RegExp(req.body.searchTerm, 'i')
-              }
-            }
-          ]
-        })
-        .select('dateCreated dateModified message')
-        .exec(function (err, review) {
-          if (err) {
-            res
-              .status(500)
-              .send(err.message);
-          } else {
-            res
-              .status(200)
-              .send(review);
-          }
-        });
-    }
-  });
-
 });
 
 export default route;
