@@ -1,18 +1,6 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
-const authorSchema = Schema({
-  bio: String,
-  instagram: String,
-  name: String,
-  prettyName: String,
-  publication: {
-    type: Schema.Types.ObjectId,
-    ref: 'Publication'
-  },
-  twitter: String
-});
-
 const articleSchema = Schema({
   authors: [{
     type: Schema.Types.ObjectId,
@@ -46,29 +34,22 @@ const articleSchema = Schema({
   type: String
 });
 
+const authorSchema = Schema({
+  bio: String,
+  instagram: String,
+  name: String,
+  prettyName: String,
+  publication: {
+    type: Schema.Types.ObjectId,
+    ref: 'Publication'
+  },
+  twitter: String
+});
+
 const trendSchema = Schema({
   description: String,
   name: String,
   prettyName: String
-});
-
-const Author = mongoose.model('Author', authorSchema);
-const Article = mongoose.model('Article', articleSchema);
-const Trend = mongoose.model('Trend', trendSchema);
-
-authorSchema.pre('save', function(next) {
-  Author
-    .findOne({
-      name: this.name
-    }, function (err, author) {
-      if (author === null) {
-        next();
-      } else {
-        next(
-          new Error('Author exists')
-        );
-      }
-    });
 });
 
 articleSchema.pre('save', function(next) {
@@ -86,6 +67,19 @@ articleSchema.pre('save', function(next) {
     });
 });
 
+authorSchema.pre('save', function(next) {
+  Author
+    .findOne({
+      name: this.name
+    }, function (err, author) {
+      if (author === null) {
+        next();
+      } else {
+        next(author);
+      }
+    });
+});
+
 trendSchema.pre('save', function(next) {
   Trend
     .findOne({
@@ -94,15 +88,17 @@ trendSchema.pre('save', function(next) {
       if (trend === null) {
         next();
       } else {
-        next(
-          new Error('Trend exists')
-        );
+        next(trend);
       }
     });
 });
 
+const Article = mongoose.model('Article', articleSchema);
+const Author = mongoose.model('Author', authorSchema);
+const Trend = mongoose.model('Trend', trendSchema);
+
 export default {
-  Author,
   Article,
+  Author,
   Trend
 };

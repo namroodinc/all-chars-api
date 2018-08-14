@@ -48,11 +48,14 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
 
   function saveArticle() {
     const authorSave = authors.map(author => {
-      return new Promise((resolve, reject) => {
-        author.save((err) => {
-          if (err) reject();
-          resolve(author);
-        });
+      return new Promise((resolve) => {
+
+        author
+          .save((existingAuthor) => {
+            if (existingAuthor) resolve(existingAuthor);
+            resolve(author);
+          });
+        
       }).catch(() => {
         console.log(`${author.name} exists!`);
       });
@@ -61,19 +64,21 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
     return Promise.all(authorSave)
       .then(authors => {
         const trendSave = trends.map(trend => {
-          return new Promise((resolve, reject) => {
-            trend.save((err) => {
-              if (err) reject();
-              resolve(trend);
-            });
+          return new Promise((resolve) => {
+
+            trend
+              .save((existingTrend) => {
+                if (existingTrend) resolve(existingTrend);
+                resolve(trend);
+              });
+
           }).catch(() => {
-            console.log(`${trend} exists!`);
+            console.log(`${trend.name} exists!`);
           });
         });
 
         return Promise.all(trendSave)
           .then(trends => {
-
             const article = new Article(
               Object
                 .assign(
