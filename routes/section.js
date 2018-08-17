@@ -3,8 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import moment from 'moment';
 
-import dataCount from "../utils/dataCount";
-
 const bodyParserLimit = bodyParser.json({
   limit: '50mb'
 });
@@ -14,26 +12,26 @@ import articleModel from '../models/articleModel';
 
 import options from '../constants/options';
 
-const { Article, Trend } = articleModel;
+const { Article, Section } = articleModel;
 
-route.post('/create/trend', bodyParserLimit, (req, res) => {
+route.post('/create/section', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      saveTrend(req.body.name);
+      saveSection(req.body.name);
     }
   });
 
-  function saveTrend(name) {
-    const trend = new Trend({
+  function saveSection(name) {
+    const section = new Section({
       name,
       prettyName: name
     });
 
-    trend.save((err, mongoResponse) => {
+    section.save((err, mongoResponse) => {
       if (err) {
         res
           .status(500)
@@ -43,27 +41,27 @@ route.post('/create/trend', bodyParserLimit, (req, res) => {
           .status(200)
           .send({
             id: mongoResponse._id.toString(),
-            message: "Trend has been created"
+            message: "Section has been created"
           });
       }
     });
   }
 });
 
-route.post('/delete/trend/:trendId', bodyParserLimit, (req, res) => {
+route.post('/delete/section/:sectionId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      deleteTrend(req.params.trendId);
+      deleteSection(req.params.sectionId);
     }
   });
 
-  function deleteTrend(trendId) {
-    Trend
-      .findByIdAndRemove(trendId, req.body, function (err) {
+  function deleteSection(sectionId) {
+    Section
+      .findByIdAndRemove(sectionId, req.body, function (err) {
         if (err) {
           res
             .status(500)
@@ -72,39 +70,33 @@ route.post('/delete/trend/:trendId', bodyParserLimit, (req, res) => {
           res
             .status(200)
             .send({
-              trendId,
-              message: "Trend has been deleted"
+              sectionId,
+              message: "Section has been deleted"
             });
         }
       });
   }
 });
 
-route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
-  const publicationId = req.body.publicationId;
-  const howManyDays = req.body.howManyDays || 1;
-
+route.post('/search/sections', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-
-      const articlesQuery = Article
+      Section
         .find({
-          'publication': publicationId,
-          'datePublished': {
-            $gte: moment().subtract(howManyDays, 'day'),
-            $lte: moment()
-          }
-        });
-
-      articlesQuery
-        .select('trends');
-
-      articlesQuery
-        .exec((err, articles) => {
+          $or: [
+            {
+              'name': {
+                '$regex': new RegExp(req.body.searchTerm, 'i')
+              }
+            }
+          ]
+        })
+        .select('description prettyName')
+        .exec(function (err, section) {
           if (err) {
             res
               .status(500)
@@ -112,17 +104,15 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
           } else {
             res
               .status(200)
-              .send({
-                articlesCount: articles.length,
-                trends: dataCount(articles, 'trends')
-              });
+              .send(section);
           }
         });
     }
   });
+
 });
 
-route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
+route.post('/retrieve/section/:sectionId', bodyParserLimit, (req, res) => {
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
@@ -130,9 +120,9 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
         .status(500)
         .send(error.message)
     } else {
-      Trend
-        .findById(req.params.trendId)
-        .exec((err, trend) => {
+      Section
+        .findById(req.params.sectionId)
+        .exec((err, section) => {
           if (err) {
             res
               .status(500)
@@ -140,7 +130,7 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
           } else {
             Article
               .find({
-                'trends': mongoose.Types.ObjectId(req.params.trendId)
+                'section': mongoose.Types.ObjectId(req.params.sectionId)
               })
               .sort({
                 'datePublished': -1
@@ -165,7 +155,7 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
                   res.status(200);
                 } else {
                   res.status(200).send({
-                    trend,
+                    section,
                     results
                   });
                 }
@@ -177,18 +167,18 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
 
 });
 
-route.post('/update/trend/:trendId', bodyParserLimit, (req, res) => {
+route.post('/update/section/:sectionId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
       res
         .status(500)
         .send(error.message)
     } else {
-      updateTrend(req.params.trendId);
+      updateSection(req.params.sectionId);
     }
   });
 
-  function updateTrend(trendId) {
+  function updateSection(sectionId) {
     const updatedData = (
       Object
         .assign(
@@ -197,8 +187,8 @@ route.post('/update/trend/:trendId', bodyParserLimit, (req, res) => {
         )
     );
 
-    Trend
-      .findByIdAndUpdate(trendId, updatedData, function (err) {
+    Section
+      .findByIdAndUpdate(sectionId, updatedData, function (err) {
         if (err) {
           res
             .status(500)
@@ -207,8 +197,8 @@ route.post('/update/trend/:trendId', bodyParserLimit, (req, res) => {
           res
             .status(200)
             .send({
-              trendId,
-              message: "Trend has been updated"
+              sectionId,
+              message: "Section has been updated"
             });
         }
       });

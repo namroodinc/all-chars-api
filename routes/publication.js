@@ -134,10 +134,17 @@ route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) =
               .populate('authors')
               .populate({
                 path: 'publication',
-                select: 'backgroundColor name id'
+                select: 'backgroundColor name'
               })
-              .populate('trends')
-              .select('datePublished description section title url')
+              .populate({
+                path: 'section',
+                select: 'prettyName'
+              })
+              .populate({
+                path: 'trends',
+                select: 'prettyName'
+              })
+              .select('datePublished description title url')
               .limit(24)
               .exec(function(err, results) {
                 if (!results) {

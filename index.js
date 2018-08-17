@@ -10,6 +10,7 @@ import ideology from './routes/ideology';
 import publication from './routes/publication';
 import publicationSearch from './routes/publicationSearch';
 import review from './routes/review';
+import section from './routes/section';
 import trend from './routes/trend';
 
 const corsConfig = {
@@ -33,6 +34,7 @@ app.use('/api', cors(corsConfig), ideology);
 app.use('/api', cors(corsConfig), publication);
 app.use('/api', cors(corsConfig), publicationSearch);
 app.use('/api', cors(corsConfig), review);
+app.use('/api', cors(corsConfig), section);
 app.use('/api', cors(corsConfig), trend);
 
 app.listen(process.env.PORT, () => {
