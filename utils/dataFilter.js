@@ -201,7 +201,7 @@ export default function(metadata) {
     datePublished: datePublished.openGraph(),
     description: description.general(),
     locale: locale.openGraph(),
-    section: section.general() || section.openGraph(),
+    section: section.general() || section.openGraph() || 'News',
     shortUrl: shortUrl.general(),
     title: title.general(),
     trends: trends.general() || trends.openGraph() || [],

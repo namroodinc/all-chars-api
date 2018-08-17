@@ -22,7 +22,10 @@ const articleSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Publication'
   },
-  section: String,
+  section: {
+    type: Schema.Types.ObjectId,
+    ref: 'Section'
+  },
   shortUrl: String,
   title: String,
   trends: [{
@@ -35,7 +38,7 @@ const articleSchema = Schema({
 });
 
 const authorSchema = Schema({
-  bio: String,
+  description: String,
   instagram: String,
   name: String,
   prettyName: String,
@@ -46,10 +49,26 @@ const authorSchema = Schema({
   twitter: String
 });
 
+const sectionSchema = Schema({
+  description: String,
+  name: String,
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'Section'
+  },
+  prettyName: String,
+  urlToImage: String
+});
+
 const trendSchema = Schema({
   description: String,
   name: String,
-  prettyName: String
+  parent: {
+    type: Schema.Types.ObjectId,
+    ref: 'Trend'
+  },
+  prettyName: String,
+  urlToImage: String
 });
 
 articleSchema.pre('save', function(next) {
@@ -80,6 +99,19 @@ authorSchema.pre('save', function(next) {
     });
 });
 
+sectionSchema.pre('save', function(next) {
+  Section
+    .findOne({
+      name: this.name
+    }, function (err, section) {
+      if (section === null) {
+        next();
+      } else {
+        next(section);
+      }
+    });
+});
+
 trendSchema.pre('save', function(next) {
   Trend
     .findOne({
@@ -95,10 +127,12 @@ trendSchema.pre('save', function(next) {
 
 const Article = mongoose.model('Article', articleSchema);
 const Author = mongoose.model('Author', authorSchema);
+const Section = mongoose.model('Section', sectionSchema);
 const Trend = mongoose.model('Trend', trendSchema);
 
 export default {
   Article,
   Author,
+  Section,
   Trend
 };

@@ -8,7 +8,7 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
-const { Author, Article, Trend } = articleModel;
+const { Author, Article, Section, Trend } = articleModel;
 
 import options from '../constants/options';
 
@@ -55,14 +55,15 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
             if (existingAuthor) resolve(existingAuthor);
             resolve(author);
           });
-        
+
       }).catch(() => {
-        console.log(`${author.name} exists!`);
+        console.log(`${author.name} exists`);
       });
     });
 
     return Promise.all(authorSave)
       .then(authors => {
+
         const trendSave = trends.map(trend => {
           return new Promise((resolve) => {
 
@@ -73,44 +74,64 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
               });
 
           }).catch(() => {
-            console.log(`${trend.name} exists!`);
+            console.log(`${trend.name} exists`);
           });
         });
 
         return Promise.all(trendSave)
-          .then(trends => {
-            const article = new Article(
-              Object
-                .assign(
-                  creationDetails,
-                  req.body,
-                  {
-                    authors: authors
-                      .filter(author => author !== undefined)
-                      .map(author => author._id)
-                  },
-                  {
-                    trends: trends
-                      .filter(trend => trend !== undefined)
-                      .map(trend => trend._id)
-                  }
-                )
-            );
+          .then(trend => {
 
-            article.save((err, mongoResponse) => {
-              if (err) {
-                res
-                  .status(500)
-                  .send(err.message);
-              } else {
-                res
-                  .status(200)
-                  .send({
-                    id: mongoResponse._id.toString(),
-                    message: "Article has been created"
-                  });
-              }
+            const sectionSave = new Promise((resolve) => {
+              const section = new Section({
+                _id: new mongoose.Types.ObjectId(),
+                name: req.body.section,
+                prettyName: req.body.section
+              });
+
+              section
+                .save((existingSection) => {
+                  if (existingSection) resolve(existingSection);
+                  resolve(section);
+                });
+            })
+            .then(section => {
+              const article = new Article(
+                Object
+                  .assign(
+                    creationDetails,
+                    req.body,
+                    {
+                      authors: authors
+                        .filter(author => author !== undefined)
+                        .map(author => author._id)
+                    },
+                    {
+                      section: section
+                    },
+                    {
+                      trends: trends
+                        .filter(trend => trend !== undefined)
+                        .map(trend => trend._id)
+                    }
+                  )
+              );
+
+              article.save((err, mongoResponse) => {
+                if (err) {
+                  res
+                    .status(500)
+                    .send(err.message);
+                } else {
+                  res
+                    .status(200)
+                    .send({
+                      id: mongoResponse._id.toString(),
+                      message: "Article has been created"
+                    });
+                }
+              });
             });
+
           });
       });
   }
@@ -129,6 +150,7 @@ route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
         .findById(req.params.articleId)
         .populate('authors')
         .populate('publication')
+        .populate('section')
         .populate('trends')
         .exec((err, article) => {
           if (err) {

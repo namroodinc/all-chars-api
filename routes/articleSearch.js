@@ -52,6 +52,7 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
   pageQuery
     .populate('authors')
     .populate('publication')
+    .populate('section')
     .populate('trends')
     .select('datePublished description section title url')
     .skip((page || 0) * 12)
