@@ -22,6 +22,7 @@ const modelSchema = mongoose.Schema({
   }],
   name: String,
   newsApiId: String,
+  prettyName: String,
   shortenedUrl: String,
   twitterScreenName: String,
   url: String,
