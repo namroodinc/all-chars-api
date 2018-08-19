@@ -155,7 +155,7 @@ route.post('/retrieve/section/:sectionId', bodyParserLimit, (req, res) => {
                   res.status(200);
                 } else {
                   res.status(200).send({
-                    section,
+                    page: section,
                     results
                   });
                 }

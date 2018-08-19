@@ -165,7 +165,7 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
                   res.status(200);
                 } else {
                   res.status(200).send({
-                    trend,
+                    page: trend,
                     results
                   });
                 }

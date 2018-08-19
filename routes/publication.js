@@ -151,7 +151,7 @@ route.post('/retrieve/publication/:publicationId', bodyParserLimit, (req, res) =
                   res.status(200);
                 } else {
                   res.status(200).send({
-                    publication,
+                    page: publication,
                     results
                   });
                 }

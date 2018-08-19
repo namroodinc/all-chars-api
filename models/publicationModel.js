@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const modelSchema = mongoose.Schema({
   dateCreated: Number,
   dateModified: Number,
-  avatarUrlToImage: String,
   backgroundColor: {
     type: String,
     default: '#000'
@@ -25,7 +24,8 @@ const modelSchema = mongoose.Schema({
   newsApiId: String,
   shortenedUrl: String,
   twitterScreenName: String,
-  url: String
+  url: String,
+  urlToImage: String
 });
 
 const Publication = mongoose.model('Publication', modelSchema);
