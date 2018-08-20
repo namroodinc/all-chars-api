@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import moment from 'moment';
 
 const bodyParserLimit = bodyParser.json({
   limit: '50mb'
@@ -13,11 +14,7 @@ const { Article } = articleModel;
 import options from '../constants/options';
 
 route.post('/search/articles', bodyParserLimit, (req, res) => {
-  const searchTerm = req.body.searchTerm;
-  const page = req.body.page;
-  const publication = req.body.publication;
-  // const author = req.body.author;
-  // const trend = req.body.trend;
+  const { country, howManyDays, howManyHours, page, publication, searchTerm } = req.body;
 
   const idQuery = Article.findById({
     _id: searchTerm
@@ -33,18 +30,24 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
         }
       ]
     })
+    .find(country !== undefined ? {
+      'country': country
+    } : {})
     .find(publication !== undefined ? {
       'publication': mongoose.Types.ObjectId(publication)
     } : {})
-    .find({
-      // 'date': { $gte: req.body.minDate, $lte: req.body.maxDate },
-      // 'authors': {
-      //   '$regex': new RegExp(author, 'i')
-      // },
-      // 'trends': {
-      //   '$regex': new RegExp(trend, 'i')
-      // }
-    })
+    .find(howManyDays !== undefined ? {
+      'datePublished': {
+        $gte: moment().subtract(howManyDays, 'd'),
+        $lte: moment()
+      }
+    } : {})
+    .find(howManyHours !== undefined ? {
+      'datePublished': {
+        $gte: moment().subtract(howManyHours, 'h'),
+        $lte: moment()
+      }
+    } : {})
     .sort({
       'datePublished': -1
     });
@@ -54,7 +57,7 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
     .populate('publication')
     .populate('section')
     .populate('trends')
-    .select('datePublished description section title url')
+    .select('country datePublished description section title url')
     .skip((page || 0) * 12)
     .limit(12);
 
