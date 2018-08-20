@@ -8,7 +8,7 @@ const bodyParserLimit = bodyParser.json({
 const route = express.Router();
 
 import articleModel from '../models/articleModel';
-const { Author } = articleModel;
+const { Article, Author } = articleModel;
 
 import options from '../constants/options';
 
@@ -58,9 +58,39 @@ route.post('/retrieve/author/:authorId', bodyParserLimit, (req, res) => {
               .status(500)
               .send(err.message);
           } else {
-            res
-              .status(200)
-              .send(author);
+            Article
+              .find({
+                'authors': mongoose.Types.ObjectId(req.params.authorId)
+              })
+              .sort({
+                'datePublished': -1
+              })
+              .populate('authors')
+              .populate({
+                path: 'publication',
+                select: 'backgroundColor name'
+              })
+              .populate({
+                path: 'section',
+                select: 'prettyName'
+              })
+              .populate({
+                path: 'trends',
+                select: 'prettyName'
+              })
+              .select('datePublished description title url')
+              .limit(24)
+              .exec(function(err, results) {
+                if (!results) {
+                  res.status(200);
+                } else {
+                  res.status(200).send({
+                    page: author,
+                    results
+                  });
+                }
+              });
+
           }
         });
     }
