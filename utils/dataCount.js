@@ -7,7 +7,7 @@ export default function(data, key) {
 
   const keyCount = Object.create(null);
   flattenDeepArray.forEach(key => {
-    keyCount[key] = keyCount[key] ? keyCount[key] + 1 : 1;
+    keyCount[key.prettyName] = keyCount[key.prettyName] ? keyCount[key.prettyName] + 1 : 1;
   });
 
   var sortable = [];

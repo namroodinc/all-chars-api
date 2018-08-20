@@ -6,6 +6,7 @@ const articleSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Author'
   }],
+  country: String,
   dateCreated: Number,
   dateModified: Number,
   datePublished: Date,

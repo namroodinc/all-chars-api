@@ -30,7 +30,9 @@ request
       return new Promise((resolve) => {
         const newsApiCall = `https://newsapi.org/v2/top-headlines?sources=${publication.newsApiId}&apiKey=${process.env.NEWS_APIKEY}`;
 
-        console.log(publication.name);
+        const { country, name } = publication;
+
+        console.log(name);
         console.log(newsApiCall);
         console.log('* * * * *');
 
@@ -38,6 +40,7 @@ request
           .get(newsApiCall)
           .end((err, res) => {
             resolve({
+              country,
               publicationId: publication['_id'],
               res
             });
@@ -49,7 +52,7 @@ request
       .then((publications) => {
 
         publications.map(publication => {
-          const { publicationId, res } = publication;
+          const { country, publicationId, res } = publication;
 
           const articlesArray = res.body.articles.map(article => {
             return new Promise((resolve) => {
@@ -71,6 +74,7 @@ request
 
                   resolve({
                     authors,
+                    country,
                     datePublished: datePublished || publishedAt,
                     description,
                     locale,

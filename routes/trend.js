@@ -92,8 +92,10 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
     } else {
 
       const articlesQuery = Article
+        .find(publicationId !== undefined ? {
+          'publication': publicationId
+        } : {})
         .find({
-          'publication': publicationId,
           'datePublished': {
             $gte: moment().subtract(howManyDays, 'day'),
             $lte: moment()
@@ -101,7 +103,10 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
         });
 
       articlesQuery
-        .select('trends');
+        .populate({
+          path: 'trends',
+          select: 'prettyName'
+        });
 
       articlesQuery
         .exec((err, articles) => {
