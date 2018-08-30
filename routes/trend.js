@@ -182,6 +182,38 @@ route.post('/retrieve/trend/:trendId', bodyParserLimit, (req, res) => {
 
 });
 
+route.post('/search/trends', bodyParserLimit, (req, res) => {
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      Trend
+        .find({
+          $or: [
+            {
+              'name': {
+                '$regex': new RegExp(req.body.searchTerm, 'i')
+              }
+            }
+          ]
+        })
+        .exec(function (err, trend) {
+          if (err) {
+            res
+              .status(500)
+              .send(err.message);
+          } else {
+            res
+              .status(200)
+              .send(trend);
+          }
+        });
+    }
+  });
+});
+
 route.post('/update/trend/:trendId', bodyParserLimit, (req, res) => {
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
