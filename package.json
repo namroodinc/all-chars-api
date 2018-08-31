@@ -6,6 +6,7 @@
   "scripts": {
     "action:add:articles": "babel-node actions/articlesToDb.js",
     "action:add:publications": "babel-node actions/publicationsToDb.js",
+    "action:update:articles": "babel-node actions/articlesFromDb.js",
     "start": "babel-node index.js",
     "lint": "eslint -c .eslintrc src",
     "test": "echo \"Error: no test specified\" && exit 1"

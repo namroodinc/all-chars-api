@@ -14,7 +14,7 @@ const { Article } = articleModel;
 import options from '../constants/options';
 
 route.post('/search/articles', bodyParserLimit, (req, res) => {
-  const { country, howManyDays, howManyHours, page, publication, searchTerm } = req.body;
+  const { country, howManyDays, howManyHours, limit, page, publication, searchTerm } = req.body;
 
   const idQuery = Article.findById({
     _id: searchTerm
@@ -58,8 +58,12 @@ route.post('/search/articles', bodyParserLimit, (req, res) => {
     .populate('section')
     .populate('trends')
     .select('country datePublished description section title url')
-    .skip((page || 0) * 12)
-    .limit(12);
+    .skip((page || 0) * 12);
+
+  if (limit) {
+    pageQuery
+      .limit(12);
+  }
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {

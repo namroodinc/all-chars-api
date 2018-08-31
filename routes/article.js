@@ -79,9 +79,9 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
         });
 
         return Promise.all(trendSave)
-          .then(trend => {
+          .then(trends => {
 
-            const sectionSave = new Promise((resolve) => {
+            return new Promise((resolve) => {
               const section = new Section({
                 _id: new mongoose.Types.ObjectId(),
                 name: req.body.section,
@@ -94,43 +94,43 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
                   resolve(section);
                 });
             })
-            .then(section => {
-              const article = new Article(
-                Object
-                  .assign(
-                    creationDetails,
-                    req.body,
-                    {
-                      authors: authors
-                        .filter(author => author !== undefined)
-                        .map(author => author._id)
-                    },
-                    {
-                      section: section
-                    },
-                    {
-                      trends: trends
-                        .filter(trend => trend !== undefined)
-                        .map(trend => trend._id)
-                    }
-                  )
-              );
+              .then(section => {
+                const article = new Article(
+                  Object
+                    .assign(
+                      creationDetails,
+                      req.body,
+                      {
+                        authors: authors
+                          .filter(author => author !== undefined)
+                          .map(author => author._id)
+                      },
+                      {
+                        section: section
+                      },
+                      {
+                        trends: trends
+                          .filter(trend => trend !== undefined)
+                          .map(trend => trend._id)
+                      }
+                    )
+                );
 
-              article.save((err, mongoResponse) => {
-                if (err) {
-                  res
-                    .status(500)
-                    .send(err.message);
-                } else {
-                  res
-                    .status(200)
-                    .send({
-                      id: mongoResponse._id.toString(),
-                      message: "Article has been created"
-                    });
-                }
+                article.save((err, mongoResponse) => {
+                  if (err) {
+                    res
+                      .status(500)
+                      .send(err.message);
+                  } else {
+                    res
+                      .status(200)
+                      .send({
+                        id: mongoResponse._id.toString(),
+                        message: "Article has been created"
+                      });
+                  }
+                });
               });
-            });
 
           });
       });
@@ -168,9 +168,42 @@ route.post('/retrieve/article/:articleId', bodyParserLimit, (req, res) => {
 
 });
 
-// TODO: this needs implementing
 route.post('/update/article/:articleId', bodyParserLimit, (req, res) => {
-  console.log(req.params.articleId);
+  mongoose.connect(process.env.MONGODB_URI, options, function(error) {
+    if (error) {
+      res
+        .status(500)
+        .send(error.message)
+    } else {
+      updateArticle(req.params.articleId);
+    }
+  });
+
+  function updateArticle(articleId) {
+    const updatedData = (
+      Object
+        .assign(
+          {},
+          req.body
+        )
+    );
+
+    Article
+      .findByIdAndUpdate(articleId, updatedData, function (err) {
+        if (err) {
+          res
+            .status(500)
+            .send(err.message);
+        } else {
+          res
+            .status(200)
+            .send({
+              articleId,
+              message: "Article has been updated"
+            });
+        }
+      });
+  }
 });
 
 export default route;
