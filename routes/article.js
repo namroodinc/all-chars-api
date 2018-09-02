@@ -95,41 +95,65 @@ route.post('/create/article', bodyParserLimit, (req, res) => {
                 });
             })
               .then(section => {
-                const article = new Article(
-                  Object
-                    .assign(
-                      creationDetails,
-                      req.body,
-                      {
-                        authors: authors
-                          .filter(author => author !== undefined)
-                          .map(author => author._id)
-                      },
-                      {
-                        section: section
-                      },
-                      {
-                        trends: trends
-                          .filter(trend => trend !== undefined)
-                          .map(trend => trend._id)
-                      }
-                    )
-                );
+                const updatedData = Object
+                  .assign(
+                    req.body,
+                    {
+                      authors: authors
+                        .filter(author => author !== undefined)
+                        .map(author => author._id)
+                    },
+                    {
+                      section: section
+                    },
+                    {
+                      trends: trends
+                        .filter(trend => trend !== undefined)
+                        .map(trend => trend._id)
+                    }
+                  );
 
-                article.save((err, mongoResponse) => {
-                  if (err) {
-                    res
-                      .status(500)
-                      .send(err.message);
-                  } else {
-                    res
-                      .status(200)
-                      .send({
-                        id: mongoResponse._id.toString(),
-                        message: "Article has been created"
-                      });
-                  }
-                });
+                if (req.body.articleId !== undefined) {
+                  Article
+                    .findByIdAndUpdate(req.body.articleId, updatedData, function (err) {
+                      if (err) {
+                        res
+                          .status(500)
+                          .send(err.message);
+                      } else {
+                        res
+                          .status(200)
+                          .send({
+                            articleId: req.body.articleId,
+                            message: "Article has been updated"
+                          });
+                      }
+                    });
+                } else {
+                  const article = new Article(
+                    Object
+                      .assign(
+                        creationDetails,
+                        updatedData
+                      )
+                  );
+
+                  article
+                    .save((err, mongoResponse) => {
+                      if (err) {
+                        res
+                          .status(500)
+                          .send(err.message);
+                      } else {
+                        res
+                          .status(200)
+                          .send({
+                            id: mongoResponse._id.toString(),
+                            message: "Article has been created"
+                          });
+                      }
+                    });
+                }
               });
 
           });

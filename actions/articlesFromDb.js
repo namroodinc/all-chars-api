@@ -20,77 +20,69 @@ request
   .post(`${process.env.API_BASE_URL}/api/search/articles`)
   .send({
     country,
-    'howManyHours': 5
+    'howManyHours': process.env.HOW_MANY_HOURS
   })
   .set('X-CORS-TOKEN', process.env.APIKEY)
   .set('Content-Type', 'application/json')
   .end((err, res) => {
-    console.log(res.body.results);
+    const articles = res.body.results.map(article => {
+      return {
+        articleId: article._id,
+        url: article.url
+      }
+    });
 
-    return Promise.all(publicationArray)
-      .then((publications) => {
+    const articlesArray = articles.map(article => {
+      const { articleId, url } = article;
 
-        publications.map(publication => {
-          const { country, publicationId, res } = publication;
+      return new Promise((resolve) => {
+        metadata(url)
+          .then((metadata) => {
+            const {
+              authors,
+              description,
+              locale,
+              section,
+              shortUrl,
+              title,
+              trends,
+              urlToImage
+            } = dataFilter(metadata);
 
-          const articlesArray = res.body.articles.map(article => {
-            return new Promise((resolve) => {
-              const { publishedAt, url } = article;
-
-              metadata(url)
-                .then((metadata) => {
-                  const {
-                    authors,
-                    datePublished,
-                    description,
-                    locale,
-                    section,
-                    shortUrl,
-                    title,
-                    trends,
-                    urlToImage
-                  } = dataFilter(metadata);
-
-                  resolve({
-                    authors,
-                    country,
-                    datePublished: datePublished || publishedAt,
-                    description,
-                    locale,
-                    publication: publicationId,
-                    section,
-                    shortUrl,
-                    title,
-                    trends,
-                    url,
-                    urlToImage
-                  });
-                });
+            resolve({
+              articleId,
+              authors,
+              description,
+              locale,
+              section,
+              shortUrl,
+              title,
+              trends,
+              urlToImage
             });
           });
+      });
+    });
 
-          return Promise.all(articlesArray)
-            .then((articles) => {
-              const articlesToUpdate = articles.map(article => {
-                return new Promise((resolve) => {
-                  request
-                    .post(`${process.env.API_BASE_URL}/api/update/article`)
-                    .send(article)
-                    .set('X-CORS-TOKEN', process.env.APIKEY)
-                    .set('Content-Type', 'application/json')
-                    .end((err, res) => {
-                      resolve(res);
-                    });
-                });
+    return Promise.all(articlesArray)
+      .then((articles) => {
+        const articlesToUpdate = articles.map(article => {
+          return new Promise((resolve) => {
+            request
+              .post(`${process.env.API_BASE_URL}/api/create/article`)
+              .send(article)
+              .set('X-CORS-TOKEN', process.env.APIKEY)
+              .set('Content-Type', 'application/json')
+              .end((err, res) => {
+                resolve(res);
               });
-
-              return Promise.all(articlesToUpdate)
-                .then((articles) => {
-                  console.log(articles.length, ' articles updated');
-                });
-            });
+          });
         });
 
+        return Promise.all(articlesToUpdate)
+          .then((articles) => {
+            console.log(articles.length, ' articles updated');
+          });
       });
 
   });
