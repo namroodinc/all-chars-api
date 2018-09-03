@@ -1,9 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
-import moment from 'moment';
-
-import dataCount from "../utils/dataCount";
 
 const bodyParserLimit = bodyParser.json({
   limit: '50mb'
@@ -81,7 +78,7 @@ route.post('/delete/trend/:trendId', bodyParserLimit, (req, res) => {
 });
 
 route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
-  const publicationId = req.body.publicationId;
+  // const publicationId = req.body.publicationId;
   const howManyDays = req.body.howManyDays || 1;
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
@@ -91,35 +88,67 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
         .send(error.message)
     } else {
 
-      const articlesQuery = Article
-        .find(publicationId !== undefined ? {
-          'publication': publicationId
-        } : {})
-        .find({
-          'datePublished': {
-            $gte: moment().subtract(howManyDays, 'day'),
-            $lte: moment()
+      const start = new Date();
+      start.setDate(start.getDate() - howManyDays);
+
+      const end = new Date();
+      end.setDate(end.getDate());
+
+      const articlesAggregate = Article
+        .aggregate([
+          {
+            $match: {
+              'datePublished': {
+                $gte: start,
+                $lte: end
+              }
+            }
+          },
+          {
+            $project: {
+              'trends': '$trends'
+            }
+          },
+          {
+            $unwind: '$trends'
+          },
+          {
+            $group: {
+              '_id': {
+                'trends': '$trends'
+              },
+              'total': {
+                $sum: 1
+              }
+            }
+          },
+          {
+            $group: {
+              '_id': 0,
+              'trends': {
+                $push: {
+                  'trend': '$_id.trends',
+                  'count': '$total'
+                }
+              }
+            }
           }
-        });
+        ]);
 
-      articlesQuery
-        .populate({
-          path: 'trends',
-          select: 'prettyName'
-        });
-
-      articlesQuery
-        .exec((err, articles) => {
+      articlesAggregate
+        .exec(function(err, trends) {
           if (err) {
             res
               .status(500)
               .send(err.message);
           } else {
-            res
-              .status(200)
-              .send({
-                articlesCount: articles.length,
-                trends: dataCount(articles, 'trends')
+            Trend
+              .populate(trends[0].trends, { path: 'trend', sort: 'count' }, function(err, trends) {
+                res
+                  .status(200)
+                  .send({
+                    trends
+                  });
               });
           }
         });
