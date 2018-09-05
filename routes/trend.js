@@ -78,8 +78,9 @@ route.post('/delete/trend/:trendId', bodyParserLimit, (req, res) => {
 });
 
 route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
-  // const publicationId = req.body.publicationId;
+  const publicationId = req.body.publicationId;
   const howManyDays = req.body.howManyDays || 1;
+  const resultsLimit = req.body.limit || 10;
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
@@ -94,15 +95,22 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
       const end = new Date();
       end.setDate(end.getDate());
 
+      let match = {
+        'datePublished': {
+          $gte: start,
+          $lte: end
+        }
+      }
+      if (publicationId !== undefined) {
+        match = Object.assign({}, match, {
+          'publication': mongoose.Types.ObjectId(publicationId)
+        })
+      }
+
       const articlesAggregate = Article
         .aggregate([
           {
-            $match: {
-              'datePublished': {
-                $gte: start,
-                $lte: end
-              }
-            }
+            $match: match
           },
           {
             $project: {
@@ -132,6 +140,22 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
                 }
               }
             }
+          },
+          {
+            $unwind: '$trends'
+          },
+          {
+            $replaceRoot: {
+              newRoot: '$trends'
+            }
+          },
+          {
+            $sort: {
+              count: -1
+            }
+          },
+          {
+            $limit: resultsLimit
           }
         ]);
 
@@ -143,7 +167,7 @@ route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
               .send(err.message);
           } else {
             Trend
-              .populate(trends[0].trends, { path: 'trend', sort: 'count' }, function(err, trends) {
+              .populate(trends, { path: 'trend' }, function(err, trends) {
                 res
                   .status(200)
                   .send({
