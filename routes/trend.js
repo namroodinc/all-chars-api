@@ -80,7 +80,7 @@ route.post('/delete/trend/:trendId', bodyParserLimit, (req, res) => {
 route.post('/retrieve/trends', bodyParserLimit, (req, res) => {
   const publicationId = req.body.publicationId;
   const howManyDays = req.body.howManyDays || 1;
-  const resultsLimit = req.body.limit || 10;
+  const resultsLimit = req.body.limit || 12;
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if (error) {
