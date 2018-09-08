@@ -41,7 +41,11 @@ route.post('/search/publications', bodyParserLimit, (req, res) => {
   });
 
   pageQuery
-    .select('backgroundColor country name newsApiId url urlToImage');
+    .select('backgroundColor country description name newsApiId url urlToImage')
+    .populate({
+      path: 'ideology',
+      select: 'description name'
+    });
 
   mongoose.connect(process.env.MONGODB_URI, options, function(error) {
     if(error) {
