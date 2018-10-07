@@ -16,7 +16,8 @@ const characterSchema = Schema(Object.assign(
       ref: 'Character'
     }],
     gender: String,
-    species: String
+    species: String,
+    origin: String
   }
 ));
 
