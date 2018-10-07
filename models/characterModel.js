@@ -17,7 +17,8 @@ const characterSchema = Schema(Object.assign(
     }],
     gender: String,
     species: String,
-    origin: String
+    origin: String,
+    living: Boolean
   }
 ));
 
