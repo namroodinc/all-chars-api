@@ -16,9 +16,15 @@ const characterSchema = Schema(Object.assign(
       ref: 'Character'
     }],
     gender: String,
-    species: String,
+    species: {
+      type: String,
+      default: 'Human'
+    },
     origin: String,
-    living: Boolean
+    living: {
+      type: Boolean,
+      default: true
+    }
   }
 ));
 
