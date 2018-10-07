@@ -1,7 +1,7 @@
 {
-  "name": "mongoapischema",
+  "name": "all-chars-api",
   "version": "1.0.0",
-  "description": "mongoapischema, kick-start mongodb project.",
+  "description": "all-chars-api, kick-start mongodb project.",
   "main": "index.js",
   "scripts": {
     "start": "babel-node index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/namroodinc/mongoapischema.git"
+    "url": "git+https://github.com/namroodinc/all-chars-api.git"
   },
   "author": "Ashoor Namrood",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/namroodinc/mongoapischema/issues"
+    "url": "https://github.com/namroodinc/all-chars-api/issues"
   },
-  "homepage": "https://github.com/namroodinc/mongoapischema#readme",
+  "homepage": "https://github.com/namroodinc/all-chars-api#readme",
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.6.1",
