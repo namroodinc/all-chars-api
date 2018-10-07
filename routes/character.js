@@ -81,7 +81,7 @@ route.post('/search/characters', bodyParserLimit, (req, res) => {
           path: 'foes',
           select: 'name description'
         })
-        .select('name description gender species')
+        .select('name description gender species origin')
         .exec(function (err, character) {
           if (err) {
             res
