@@ -3,7 +3,7 @@ import express from 'express';
 import cors from 'cors';
 const app = express();
 
-import article from './routes/article';
+import character from './routes/character';
 
 const corsConfig = {
   methods: ['GET'],
@@ -18,7 +18,7 @@ app.use((req, res, next) => {
   }
 });
 
-app.use('/api', cors(corsConfig), article);
+app.use('/api', cors(corsConfig), character);
 
 app.listen(process.env.PORT, () => {
   console.log(
